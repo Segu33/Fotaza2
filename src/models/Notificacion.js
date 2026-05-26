@@ -1,10 +1,51 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define("Notificacion", {
-    id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-    tipo: { type: DataTypes.STRING, allowNull: false },
-    leida: { type: DataTypes.BOOLEAN, defaultValue: false },
-  }, {
-    tableName: "notificaciones",
-    timestamps: false,
-  });
+
+    const Notificacion = sequelize.define(
+        "Notificacion",
+        {
+
+            tipo:{
+                type:DataTypes.ENUM(
+                    "comentario",
+                    "valoracion",
+                    "follow",
+                    "interes"
+                ),
+                allowNull:false
+            },
+
+            leida:{
+                type:DataTypes.BOOLEAN,
+                defaultValue:false
+            },
+
+            user_id:{
+                type:DataTypes.INTEGER,
+                allowNull:false
+            },
+
+            actor_id:{
+                type:DataTypes.INTEGER,
+                allowNull:false
+            },
+
+            publicacion_id:{
+                type:DataTypes.INTEGER,
+                allowNull:true
+            },
+
+            imagen_id:{
+                type:DataTypes.INTEGER,
+                allowNull:true
+            }
+
+        },
+        {
+            tableName:"notificaciones",
+            underscored:true
+        }
+    );
+
+    return Notificacion;
+
 };

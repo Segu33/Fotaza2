@@ -3,8 +3,7 @@ const db = require("../models");
 const toggleLike = async (req, res) => {
   try {
     const { imagen_id } = req.body;
-    const userId = 1; // después usamos sesión
-
+    const userId = req.session.user.id;
     // Buscar si ya existe like
     const existe = await db.Valoracion.findOne({
       where: {

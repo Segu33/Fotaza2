@@ -4,7 +4,7 @@ const crearPublicacion = async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
 
-    const userId = 1;
+    const userId = req.session.user.id;
 
     const nuevaPublicacion = await db.Publicacion.create({
       titulo,

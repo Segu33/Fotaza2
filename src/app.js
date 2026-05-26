@@ -38,4 +38,8 @@ app.use("/publicaciones", publicacionRoutes);
 const valoracionRoutes = require("./routes/valoracionRoutes");
 app.use("/valoraciones", valoracionRoutes);
 
+// 👉 NOTIFICACIONES
+const notificacionRoutes = require("./routes/notificacionRoutes");
+app.use("/notificaciones", notificacionRoutes);
+
 module.exports = app;
