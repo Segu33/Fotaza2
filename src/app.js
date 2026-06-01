@@ -42,4 +42,12 @@ app.use("/valoraciones", valoracionRoutes);
 const notificacionRoutes = require("./routes/notificacionRoutes");
 app.use("/notificaciones", notificacionRoutes);
 
+// 👉 FOLLOW
+const followRoutes = require("./routes/followRoutes");
+app.use("/follow", followRoutes);
+
+// 👉 PERFIL
+const perfilRoutes = require("./routes/perfilRoutes");
+app.use("/perfil", perfilRoutes);
+
 module.exports = app;
