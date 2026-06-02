@@ -60,6 +60,10 @@ const listarPublicaciones = async (req, res) => {
               model: db.Valoracion,
               as: "valoraciones",
             },
+            {
+              model: db.Favorito,
+              as: "favoritos",
+            }
           ],
         },
         {

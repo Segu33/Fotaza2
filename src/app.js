@@ -50,4 +50,10 @@ app.use("/follow", followRoutes);
 const perfilRoutes = require("./routes/perfilRoutes");
 app.use("/perfil", perfilRoutes);
 
+// 👉 FAVORITOS
+const favoritoRoutes = require("./routes/favoritoRoutes");
+app.use("/favoritos", favoritoRoutes);
+
+
+
 module.exports = app;

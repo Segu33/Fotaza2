@@ -254,6 +254,29 @@ db.Notificacion.belongsTo(db.Imagen,{
     foreignKey:"imagen_id",
     as:"imagen"
 });
+ 
+
+//     Favoritos
+
+db.Imagen.hasMany(db.Favorito,{
+    foreignKey:"imagen_id",
+    as:"favoritos"
+});
+
+db.Favorito.belongsTo(db.Imagen,{
+    foreignKey:"imagen_id",
+    as:"imagen"
+});
+
+db.User.hasMany(db.Favorito,{
+    foreignKey:"user_id",
+    as:"favoritosGuardados"
+});
+
+db.Favorito.belongsTo(db.User,{
+    foreignKey:"user_id",
+    as:"usuario"
+});
 
 // ================= CONEXIÓN =================
 
@@ -265,7 +288,7 @@ sequelize.authenticate()
     console.error("❌ Error DB:",err);
 });
 
-sequelize.sync({ alter:true })
+sequelize.sync()
 .then(()=>{
     console.log("✅ Tablas sincronizadas");
 })

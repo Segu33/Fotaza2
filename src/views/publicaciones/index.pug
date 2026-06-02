@@ -40,6 +40,7 @@ each pub in publicaciones
       - const img = pub.imagenes[0]
       - const userId = 1
       - const yaLike = img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
+      - const yaFavorito = img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
 
       img(
         src=img.url
@@ -52,6 +53,7 @@ each pub in publicaciones
       )
         | ❤️ #{img.valoraciones ? img.valoraciones.length : 0} likes
 
+      // LIKE
       form(
         action="/valoraciones/like"
         method="POST"
@@ -77,6 +79,33 @@ each pub in publicaciones
             type="submit"
             style="background:#ff4d6d; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
           ) ❤️ Like
+
+      // FAVORITOS
+      form(
+        action="/favoritos/toggle"
+        method="POST"
+        style="margin-bottom:10px;"
+      )
+
+        input(
+          type="hidden"
+          name="imagen_id"
+          value=img.id
+        )
+
+        if yaFavorito
+
+          button(
+            type="submit"
+            style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
+          ) ⭐ Quitar favorito
+
+        else
+
+          button(
+            type="submit"
+            style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
+          ) ⭐ Guardar favorito
 
     h4(style="margin-top:15px") Comentarios:
 
