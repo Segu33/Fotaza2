@@ -107,6 +107,38 @@ each pub in publicaciones
             style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
           ) ⭐ Guardar favorito
 
+
+
+  //  DENUNCIAS        
+          form(
+  action="/denuncias/crear"
+  method="POST"
+  style="margin-bottom:10px;"
+)
+
+  input(
+    type="hidden"
+    name="publicacion_id"
+    value=pub.id
+  )
+
+  input(
+    type="hidden"
+    name="motivo"
+    value="Contenido inapropiado"
+  )
+
+  input(
+    type="hidden"
+    name="descripcion"
+    value="Denuncia realizada desde el feed"
+  )
+
+  button(
+    type="submit"
+    style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
+  ) 🚩 Denunciar
+
     h4(style="margin-top:15px") Comentarios:
 
     if pub.comentarios && pub.comentarios.length > 0

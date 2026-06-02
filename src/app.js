@@ -54,6 +54,10 @@ app.use("/perfil", perfilRoutes);
 const favoritoRoutes = require("./routes/favoritoRoutes");
 app.use("/favoritos", favoritoRoutes);
 
+// 👉 DENUNCIAS
+const denunciaRoutes =require("./routes/denunciaRoutes");
+app.use("/denuncias",denunciaRoutes);
+
 
 
 module.exports = app;
