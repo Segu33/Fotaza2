@@ -1,5 +1,5 @@
 const db = require("../models");
-
+const { crearNotificacion } =require("../helpers/notificacionHelper");
 const seguirUsuario = async (req, res) => {
 
     try {
@@ -32,7 +32,15 @@ const seguirUsuario = async (req, res) => {
                 seguido_id: seguidoId
 
             });
+            
 
+            await crearNotificacion({
+
+               receptorId: seguidoId,
+               actorId: seguidorId,
+               tipo: "follow"
+
+    });
         }
 
         res.redirect(`/perfil/${seguidoId}`);
