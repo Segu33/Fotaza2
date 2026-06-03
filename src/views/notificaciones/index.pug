@@ -49,6 +49,10 @@ html
 
         |  está interesado en tu imagen
 
+      if n.tipo==="bloqueo"
+      
+        | tu publicación fue bloqueada por acumulación de denuncias
+
       small.text-muted
 
        = new Date(n.createdAt).toLocaleString("es-AR")

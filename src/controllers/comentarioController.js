@@ -13,8 +13,7 @@ const crearComentario = async (req,res)=>{
       publicacion_id
     } = req.body;
 
-    const userId=
-    req.session.user.id;
+    const userId=req.session.user.id;
 
     await db.Comentario.create({
 

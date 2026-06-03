@@ -12,8 +12,7 @@ const listar = async(req,res)=>{
 
   }
 
-  const userId =
-  req.session.user.id;
+  const userId =req.session.user.id;
 
   const notificaciones =
 

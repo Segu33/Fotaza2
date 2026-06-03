@@ -38,7 +38,7 @@ each pub in publicaciones
     if pub.imagenes && pub.imagenes.length > 0
 
       - const img = pub.imagenes[0]
-      - const userId = 1
+      - const userId = session && session.user ? session.user.id : null
       - const yaLike = img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
       - const yaFavorito = img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
 
@@ -80,7 +80,7 @@ each pub in publicaciones
             style="background:#ff4d6d; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
           ) ❤️ Like
 
-      // FAVORITOS
+            // FAVORITOS
       form(
         action="/favoritos/toggle"
         method="POST"
@@ -107,37 +107,35 @@ each pub in publicaciones
             style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
           ) ⭐ Guardar favorito
 
+      // DENUNCIAS
+      form(
+        action="/denuncias/crear"
+        method="POST"
+        style="margin-bottom:10px;"
+      )
 
+        input(
+          type="hidden"
+          name="imagen_id"
+          value=img.id
+        )
 
-  //  DENUNCIAS        
-          form(
-  action="/denuncias/crear"
-  method="POST"
-  style="margin-bottom:10px;"
-)
+        input(
+          type="hidden"
+          name="motivo"
+          value="Contenido inapropiado"
+        )
 
-  input(
-    type="hidden"
-    name="publicacion_id"
-    value=pub.id
-  )
+        input(
+          type="hidden"
+          name="descripcion"
+          value="Denuncia realizada desde el feed"
+        )
 
-  input(
-    type="hidden"
-    name="motivo"
-    value="Contenido inapropiado"
-  )
-
-  input(
-    type="hidden"
-    name="descripcion"
-    value="Denuncia realizada desde el feed"
-  )
-
-  button(
-    type="submit"
-    style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-  ) 🚩 Denunciar
+        button(
+          type="submit"
+          style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
+        ) 🚩 Denunciar
 
     h4(style="margin-top:15px") Comentarios:
 

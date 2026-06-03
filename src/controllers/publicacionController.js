@@ -1,5 +1,6 @@
 const db = require("../models");
 const { Op } = require("sequelize");
+
 const crearPublicacion = async (req, res) => {
   try {
     const { titulo, descripcion } = req.body;
@@ -21,35 +22,44 @@ const crearPublicacion = async (req, res) => {
     }
 
     res.redirect("/publicaciones");
+
   } catch (error) {
+
     console.error(error);
     res.send("Error al crear publicación");
+
   }
 };
 
 const listarPublicaciones = async (req, res) => {
+
   try {
 
     const busqueda = req.query.q || "";
 
     const publicaciones = await db.Publicacion.findAll({
 
-      where: busqueda
-        ? {
-            [Op.or]: [
-              {
-                titulo: {
-                  [Op.like]: `%${busqueda}%`,
+      where: {
+
+        bloqueada: false,
+
+        ...(busqueda
+          ? {
+              [Op.or]: [
+                {
+                  titulo: {
+                    [Op.like]: `%${busqueda}%`,
+                  },
                 },
-              },
-              {
-                descripcion: {
-                  [Op.like]: `%${busqueda}%`,
+                {
+                  descripcion: {
+                    [Op.like]: `%${busqueda}%`,
+                  },
                 },
-              },
-            ],
-          }
-        : {},
+              ],
+            }
+          : {})
+      },
 
       include: [
         {
@@ -63,7 +73,7 @@ const listarPublicaciones = async (req, res) => {
             {
               model: db.Favorito,
               as: "favoritos",
-            }
+            },
           ],
         },
         {
@@ -88,11 +98,14 @@ const listarPublicaciones = async (req, res) => {
     res.render("publicaciones/index", {
       publicaciones,
       busqueda,
+      session: req.session,
     });
 
   } catch (error) {
+
     console.error(error);
     res.send("Error al cargar publicaciones");
+
   }
 };
 
