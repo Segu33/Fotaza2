@@ -1,184 +1,169 @@
-h1(style="text-align:center; margin-top:20px;") Feed
+extends ../layouts/main
 
-// BUSCADOR
-form(
-  action="/publicaciones"
-  method="GET"
-  style="width:400px; margin:20px auto;"
-)
+block content
 
-  input(
-    type="text"
-    name="q"
-    placeholder="Buscar publicaciones..."
-    value=busqueda
-    style="padding:8px; width:75%; border:1px solid #ccc; border-radius:6px;"
-  )
+  .row.row-cols-1.row-cols-md-3.g-4
 
-  button(
-    type="submit"
-    style="padding:8px 12px; margin-left:5px; border:none; background:#007bff; color:white; border-radius:6px; cursor:pointer;"
-  ) Buscar
+    each pub in publicaciones
 
-each pub in publicaciones
-
-  div(
-    style="border:1px solid #ddd; margin:20px auto; padding:20px; border-radius:12px; width:400px; background:#fafafa; box-shadow:0 2px 8px rgba(0,0,0,0.05);"
-  )
-
-    h2(style="margin-bottom:5px")= pub.titulo
-
-    p(style="color:#555")= pub.descripcion
-
-    if pub.usuario
-      p(style="font-size:12px; color:#888")
-        | Publicado por:
-        |  #{pub.usuario.username}
-
-    if pub.imagenes && pub.imagenes.length > 0
-
-      - const img = pub.imagenes[0]
+      - const img = pub.imagenes && pub.imagenes.length > 0 ? pub.imagenes[0] : null
       - const userId = session && session.user ? session.user.id : null
-      - const yaLike = img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
-      - const yaFavorito = img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
+      - const yaLike = img && img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
+      - const yaFavorito = img && img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
 
-      img(
-        src=img.url
-        width="100%"
-        style="border-radius:10px; margin-top:10px;"
-      )
+      .col
 
-      p(
-        style="font-weight:bold; color:#ff4d6d; margin-top:10px;"
-      )
-        | ❤️ #{img.valoraciones ? img.valoraciones.length : 0} likes
+        .card.shadow.border-0.rounded-4.overflow-hidden.h-100
 
-      // LIKE
-      form(
-        action="/valoraciones/like"
-        method="POST"
-        style="margin-bottom:10px;"
-      )
+          if img
 
-        input(
-          type="hidden"
-          name="imagen_id"
-          value=img.id
-        )
+            img.card-img-top(
+              src=img.url
+              style="width:100%; object-fit:cover;"
+            )
 
-        if yaLike
+          .card-body
 
-          button(
-            type="submit"
-            style="background:#aaa; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-          ) 💔 Unlike
+            h5.card-title= pub.titulo
 
-        else
+            p.card-text= pub.descripcion
 
-          button(
-            type="submit"
-            style="background:#ff4d6d; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-          ) ❤️ Like
+            if pub.usuario
 
-            // FAVORITOS
-      form(
-        action="/favoritos/toggle"
-        method="POST"
-        style="margin-bottom:10px;"
-      )
+              p.text-muted.small
+                | Publicado por #{pub.usuario.username}
 
-        input(
-          type="hidden"
-          name="imagen_id"
-          value=img.id
-        )
+            if img
 
-        if yaFavorito
+              p.fw-bold.text-danger.mb-1
+                | ❤️ #{img.valoraciones ? img.valoraciones.length : 0} likes
 
-          button(
-            type="submit"
-            style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-          ) ⭐ Quitar favorito
+              p.fw-bold.text-warning.mb-3
+                | ⭐ #{img.favoritos ? img.favoritos.length : 0} favoritos
 
-        else
+              .d-flex.gap-2.mb-3
 
-          button(
-            type="submit"
-            style="background:#ffc107; color:black; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-          ) ⭐ Guardar favorito
+                // LIKE
+                form(
+                  action="/valoraciones/like"
+                  method="POST"
+                  class="flex-fill"
+                )
 
-      // DENUNCIAS
-      form(
-        action="/denuncias/crear"
-        method="POST"
-        style="margin-bottom:10px;"
-      )
+                  input(
+                    type="hidden"
+                    name="imagen_id"
+                    value=img.id
+                  )
 
-        input(
-          type="hidden"
-          name="imagen_id"
-          value=img.id
-        )
+                  if yaLike
 
-        input(
-          type="hidden"
-          name="motivo"
-          value="Contenido inapropiado"
-        )
+                    button.btn.btn-secondary.btn-sm.w-100(
+                      type="submit"
+                    )
+                      | ❤️
 
-        input(
-          type="hidden"
-          name="descripcion"
-          value="Denuncia realizada desde el feed"
-        )
+                  else
 
-        button(
-          type="submit"
-          style="background:#dc3545; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;"
-        ) 🚩 Denunciar
+                    button.btn.btn-danger.btn-sm.w-100(
+                      type="submit"
+                    )
+                      | ❤️
 
-    h4(style="margin-top:15px") Comentarios:
+                // FAVORITOS
+                form(
+                  action="/favoritos/toggle"
+                  method="POST"
+                  class="flex-fill"
+                )
 
-    if pub.comentarios && pub.comentarios.length > 0
+                  input(
+                    type="hidden"
+                    name="imagen_id"
+                    value=img.id
+                  )
 
-      each com in pub.comentarios
+                  if yaFavorito
 
-        p(
-          style="background:#eee; padding:6px 10px; border-radius:8px; margin-bottom:5px;"
-        )
+                    button.btn.btn-warning.btn-sm.w-100(
+                      type="submit"
+                    )
+                      | ⭐
 
-          b #{com.usuario.username}:
+                  else
 
-          |  #{com.texto}
+                    button.btn.btn-outline-warning.btn-sm.w-100(
+                      type="submit"
+                    )
+                      | ⭐
 
-    else
+                // DENUNCIAS
+                form(
+                  action="/denuncias/crear"
+                  method="POST"
+                  class="flex-fill"
+                )
 
-      p(style="color:#888")
-        | No hay comentarios
+                  input(
+                    type="hidden"
+                    name="imagen_id"
+                    value=img.id
+                  )
 
-    form(
-      action="/comentarios/crear"
-      method="POST"
-      style="margin-top:10px;"
-    )
+                  input(
+                    type="hidden"
+                    name="motivo"
+                    value="Contenido inapropiado"
+                  )
 
-      input(
-        type="hidden"
-        name="publicacion_id"
-        value=pub.id
-      )
+                  input(
+                    type="hidden"
+                    name="descripcion"
+                    value="Denuncia realizada desde el feed"
+                  )
 
-      input(
-        type="text"
-        name="texto"
-        placeholder="Escribí un comentario..."
-        required
-        style="padding:6px; width:70%; border-radius:6px; border:1px solid #ccc;"
-      )
+                  button.btn.btn-outline-danger.btn-sm.w-100(
+                    type="submit"
+                  )
+                    | 🚩
 
-      button(
-        type="submit"
-        style="padding:6px 12px; margin-left:5px; border:none; background:#007bff; color:white; border-radius:6px; cursor:pointer;"
-      ) Comentar
+            h6.mt-3 Comentarios
 
-    hr
+            if pub.comentarios && pub.comentarios.length > 0
+
+              each com in pub.comentarios
+
+                .alert.alert-light.py-2.mb-2
+
+                  strong #{com.usuario.username}:
+                  |  #{com.texto}
+
+            else
+
+              p.text-muted.small
+                | No hay comentarios
+
+            form(
+              action="/comentarios/crear"
+              method="POST"
+            )
+
+              input(
+                type="hidden"
+                name="publicacion_id"
+                value=pub.id
+              )
+
+              .input-group
+
+                input.form-control(
+                  type="text"
+                  name="texto"
+                  placeholder="Escribí un comentario..."
+                  required
+                )
+
+                button.btn.btn-primary(
+                  type="submit"
+                )
+                  | Comentar

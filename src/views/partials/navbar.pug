@@ -1,0 +1,48 @@
+nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
+  .container-fluid
+
+    a.navbar-brand.fw-bold.text-danger.fs-3(
+      href="/publicaciones"
+    )
+      | Fotaza 2
+
+    form.d-flex.mx-auto(
+      action="/publicaciones"
+      method="GET"
+      style="width:50%;"
+    )
+
+      input.form-control.rounded-pill(
+        type="text"
+        name="q"
+        placeholder="Buscar publicaciones..."
+      )
+
+    .d-flex.align-items-center.gap-2
+
+      a.btn.btn-light.rounded-pill(
+        href="/publicaciones"
+      )
+        | 🏠 Inicio
+
+      a.btn.btn-light.rounded-pill(
+        href="/notificaciones"
+      )
+        | 🔔
+
+      if session && session.user
+
+        a.btn.btn-primary.rounded-pill(
+          href="/publicaciones/crear"
+        )
+          | ➕
+
+        a.btn.btn-outline-dark.rounded-pill(
+          href=`/perfil/${session.user.id}`
+        )
+          | Perfil
+
+        a.btn.btn-danger.rounded-pill(
+          href="/auth/logout"
+        )
+          | Salir
