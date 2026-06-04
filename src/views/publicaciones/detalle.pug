@@ -1,0 +1,208 @@
+extends ../layouts/main
+
+block content
+
+  - const img = publicacion.imagenes[0]
+  - const userId = session && session.user ? session.user.id : null
+  - const yaLike = img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
+  - const yaFavorito = img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
+
+  .container.mt-4
+
+    .card.border-0.shadow-lg.rounded-4.overflow-hidden
+
+      .row.g-0
+
+        // IMAGEN PRINCIPAL
+        .col-lg-5
+
+          img.rounded-4(
+            src=img.url
+            style="width:100%; max-height:500px; object-fit:contain;"
+          )
+
+        // PANEL DERECHO
+        .col-lg-5.p-4
+
+          h2.mb-2= publicacion.titulo
+
+          p.text-muted.mb-2= publicacion.descripcion
+
+          p.small.text-muted
+            | Publicado por #{publicacion.usuario.username}
+
+          hr
+
+          // ACCIONES
+          .d-flex.align-items-center.gap-4.mb-4
+
+            // LIKE
+            form(
+              action="/valoraciones/like"
+              method="POST"
+              class="m-0"
+            )
+
+              input(
+                type="hidden"
+                name="imagen_id"
+                value=img.id
+              )
+
+              if yaLike
+
+                button.btn.btn-link.text-danger.text-decoration-none.p-0(
+                  type="submit"
+                  title="Me gusta"
+                )
+                  | ❤️ #{img.valoraciones ? img.valoraciones.length : 0}
+
+              else
+
+                button.btn.btn-link.text-danger.text-decoration-none.p-0(
+                  type="submit"
+                  title="Me gusta"
+                )
+                  | ❤️ #{img.valoraciones ? img.valoraciones.length : 0}
+
+            // FAVORITOS
+            form(
+              action="/favoritos/toggle"
+              method="POST"
+              class="m-0"
+            )
+
+              input(
+                type="hidden"
+                name="imagen_id"
+                value=img.id
+              )
+
+              button.btn.btn-link.text-warning.text-decoration-none.p-0(
+                type="submit"
+                title="Favoritos"
+              )
+                | ⭐ #{img.favoritos ? img.favoritos.length : 0}
+
+            // DENUNCIA
+            form(
+              action="/denuncias/crear"
+              method="POST"
+              class="m-0"
+            )
+
+              input(
+                type="hidden"
+                name="imagen_id"
+                value=img.id
+              )
+
+              input(
+                type="hidden"
+                name="motivo"
+                value="Contenido inapropiado"
+              )
+
+              input(
+                type="hidden"
+                name="descripcion"
+                value="Denuncia desde detalle"
+              )
+
+              button.btn.btn-link.text-danger.text-decoration-none.p-0(
+                type="submit"
+                title="Reportar publicación"
+              )
+                | 🚩 Reportar
+
+          hr
+
+          // COMENTARIOS
+          h5.mb-3 Comentarios
+
+          if publicacion.comentarios && publicacion.comentarios.length > 0
+
+            .overflow-auto(
+              style="max-height:300px;"
+            )
+
+              each comentario in publicacion.comentarios
+
+                .border-bottom.py-2
+
+                  strong.small= comentario.usuario.username
+
+                  p.small.mb-0= comentario.texto
+
+          else
+
+            p.text-muted.small
+              | No hay comentarios
+
+          // FORMULARIO COMENTARIO
+          form(
+            action="/comentarios/crear"
+            method="POST"
+            class="mt-3"
+          )
+
+            input(
+              type="hidden"
+              name="publicacion_id"
+              value=publicacion.id
+            )
+
+            .input-group
+
+              input.form-control.form-control-sm(
+                type="text"
+                name="texto"
+                placeholder="Escribí un comentario..."
+                required
+              )
+
+              button.btn.btn-primary.btn-sm(
+                type="submit"
+              )
+                | Enviar
+
+        // RELACIONADAS LATERALES
+        .col-lg-2.p-3
+
+          h6.text-muted.mb-3
+            | Relacionadas
+
+          each rel in relacionadas.slice(0,4)
+
+            if rel.imagenes && rel.imagenes.length > 0
+
+              a(
+                href=`/publicaciones/${rel.id}`
+              )
+
+                img.rounded-3.mb-3.shadow-sm(
+                  src=rel.imagenes[0].url
+                  style="width:100%;"
+                )
+
+    hr.my-5
+
+    // MÁS COMO ESTO
+    h2.mb-4 Más como esto
+
+    .row.row-cols-2.row-cols-md-4.g-3
+
+      each rel in relacionadas
+
+        if rel.imagenes && rel.imagenes.length > 0
+
+          .col
+
+            a(
+              href=`/publicaciones/${rel.id}`
+            )
+
+              img.rounded-4.shadow-sm(
+                src=rel.imagenes[0].url
+                style="width:100%;"
+              )

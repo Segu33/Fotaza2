@@ -8,6 +8,9 @@ const publicacionController = require("../controllers/publicacionController");
 // 👉 FEED (ESTA FALTA)
 router.get("/", publicacionController.listarPublicaciones);
 
+// 👉 VER PUBLICACIÓN
+router.get("/:id", publicacionController.verPublicacion);
+
 // 👉 MOSTRAR FORM
 router.get("/crear", (req, res) => {
   res.render("publicaciones/crear");

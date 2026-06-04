@@ -108,8 +108,88 @@ const listarPublicaciones = async (req, res) => {
 
   }
 };
+   const verPublicacion = async (req, res) => {
 
+  try {
+
+    const publicacion = await db.Publicacion.findByPk(
+      req.params.id,
+      {
+        include: [
+          {
+            model: db.Imagen,
+            as: "imagenes",
+            include: [
+              {
+                model: db.Valoracion,
+                as: "valoraciones",
+              },
+              {
+                model: db.Favorito,
+                as: "favoritos",
+              },
+            ],
+          },
+          {
+            model: db.User,
+            as: "usuario",
+          },
+          {
+            model: db.Comentario,
+            as: "comentarios",
+            include: [
+              {
+                model: db.User,
+                as: "usuario",
+              },
+            ],
+          },
+        ],
+      }
+    );
+
+    if (!publicacion) {
+      return res.send("Publicación no encontrada");
+    }
+
+    const relacionadas = await db.Publicacion.findAll({
+
+      where: {
+        id: {
+          [Op.ne]: publicacion.id,
+        },
+        bloqueada: false,
+      },
+
+      include: [
+        {
+          model: db.Imagen,
+          as: "imagenes",
+        },
+      ],
+
+      limit: 8,
+
+      order: db.sequelize.random(),
+
+    });
+
+    res.render("publicaciones/detalle", {
+      publicacion,
+      relacionadas,
+      session: req.session,
+    });
+
+  } catch (error) {
+
+    console.error(error);
+    res.send("Error al cargar publicación");
+
+  }
+};
+  
 module.exports = {
   crearPublicacion,
   listarPublicaciones,
+  verPublicacion
 };

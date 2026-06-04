@@ -2,168 +2,24 @@ extends ../layouts/main
 
 block content
 
-  .row.row-cols-1.row-cols-md-3.g-4
+  .row.g-3.justify-content-start
 
     each pub in publicaciones
 
       - const img = pub.imagenes && pub.imagenes.length > 0 ? pub.imagenes[0] : null
-      - const userId = session && session.user ? session.user.id : null
-      - const yaLike = img && img.valoraciones ? img.valoraciones.some(v => v.user_id === userId) : false
-      - const yaFavorito = img && img.favoritos ? img.favoritos.some(f => f.user_id === userId) : false
 
-      .col
+      if img
 
-        .card.shadow.border-0.rounded-4.overflow-hidden.h-100
+        .col-12.col-sm-6.col-md-4.col-lg-3
 
-          if img
+          a(
+            href=`/publicaciones/${pub.id}`
+            style="text-decoration:none;"
+          )
 
-            img.card-img-top(
-              src=img.url
-              style="width:100%; object-fit:cover;"
-            )
+            .card.border-0.rounded-4.overflow-hidden
 
-          .card-body
-
-            h5.card-title= pub.titulo
-
-            p.card-text= pub.descripcion
-
-            if pub.usuario
-
-              p.text-muted.small
-                | Publicado por #{pub.usuario.username}
-
-            if img
-
-              p.fw-bold.text-danger.mb-1
-                | ❤️ #{img.valoraciones ? img.valoraciones.length : 0} likes
-
-              p.fw-bold.text-warning.mb-3
-                | ⭐ #{img.favoritos ? img.favoritos.length : 0} favoritos
-
-              .d-flex.gap-2.mb-3
-
-                // LIKE
-                form(
-                  action="/valoraciones/like"
-                  method="POST"
-                  class="flex-fill"
-                )
-
-                  input(
-                    type="hidden"
-                    name="imagen_id"
-                    value=img.id
-                  )
-
-                  if yaLike
-
-                    button.btn.btn-secondary.btn-sm.w-100(
-                      type="submit"
-                    )
-                      | ❤️
-
-                  else
-
-                    button.btn.btn-danger.btn-sm.w-100(
-                      type="submit"
-                    )
-                      | ❤️
-
-                // FAVORITOS
-                form(
-                  action="/favoritos/toggle"
-                  method="POST"
-                  class="flex-fill"
-                )
-
-                  input(
-                    type="hidden"
-                    name="imagen_id"
-                    value=img.id
-                  )
-
-                  if yaFavorito
-
-                    button.btn.btn-warning.btn-sm.w-100(
-                      type="submit"
-                    )
-                      | ⭐
-
-                  else
-
-                    button.btn.btn-outline-warning.btn-sm.w-100(
-                      type="submit"
-                    )
-                      | ⭐
-
-                // DENUNCIAS
-                form(
-                  action="/denuncias/crear"
-                  method="POST"
-                  class="flex-fill"
-                )
-
-                  input(
-                    type="hidden"
-                    name="imagen_id"
-                    value=img.id
-                  )
-
-                  input(
-                    type="hidden"
-                    name="motivo"
-                    value="Contenido inapropiado"
-                  )
-
-                  input(
-                    type="hidden"
-                    name="descripcion"
-                    value="Denuncia realizada desde el feed"
-                  )
-
-                  button.btn.btn-outline-danger.btn-sm.w-100(
-                    type="submit"
-                  )
-                    | 🚩
-
-            h6.mt-3 Comentarios
-
-            if pub.comentarios && pub.comentarios.length > 0
-
-              each com in pub.comentarios
-
-                .alert.alert-light.py-2.mb-2
-
-                  strong #{com.usuario.username}:
-                  |  #{com.texto}
-
-            else
-
-              p.text-muted.small
-                | No hay comentarios
-
-            form(
-              action="/comentarios/crear"
-              method="POST"
-            )
-
-              input(
-                type="hidden"
-                name="publicacion_id"
-                value=pub.id
+              img.card-img-top(
+                src=img.url
+                style="width:100%; display:block;"
               )
-
-              .input-group
-
-                input.form-control(
-                  type="text"
-                  name="texto"
-                  placeholder="Escribí un comentario..."
-                  required
-                )
-
-                button.btn.btn-primary(
-                  type="submit"
-                )
-                  | Comentar
