@@ -64,7 +64,7 @@ const crearDenuncia = async (req, res) => {
   }
 }
 
-    res.redirect("/publicaciones");
+    res.redirect(req.get("Referer") || "/publicaciones");
 
   } catch (error) {
 

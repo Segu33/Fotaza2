@@ -76,7 +76,9 @@ html(lang="es")
 
   body
 
-    include ../partials/navbar
+    if session && session.user
+
+      include ../partials/navbar
 
     .container-fluid.mt-4
 

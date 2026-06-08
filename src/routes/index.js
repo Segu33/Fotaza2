@@ -3,10 +3,18 @@ const router = express.Router();
 
 const authRoutes = require("./authRoutes");
 
-router.use("/", authRoutes);
-
+// Si ya inició sesión → feed
+// Si no inició sesión → login
 router.get("/", (req, res) => {
-  res.send("Home");
+
+  if (req.session.user) {
+    return res.redirect("/publicaciones");
+  }
+
+  return res.redirect("/login");
+
 });
+
+router.use("/", authRoutes);
 
 module.exports = router;

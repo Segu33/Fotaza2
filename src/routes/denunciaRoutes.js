@@ -2,12 +2,12 @@ const express = require("express");
 
 const router = express.Router();
 
+const authMiddleware = require("../middlewares/authMiddleware");
 const denunciaController =
 require("../controllers/denunciaController");
 
 router.post(
-  "/crear",
-  denunciaController.crearDenuncia
+  "/crear",authMiddleware,denunciaController.crearDenuncia
 );
 
 module.exports = router;

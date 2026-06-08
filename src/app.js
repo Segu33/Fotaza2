@@ -3,7 +3,7 @@ const path = require("path");
 const session = require("express-session");
 
 const app = express();
-
+const globalsMiddleware = require("./middlewares/globalsMiddleware");
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +21,9 @@ app.set("views", path.join(__dirname, "views"));
 
 // Archivos públicos
 app.use(express.static(path.join(__dirname, "public")));
+
+// Middlewares globales
+app.use(globalsMiddleware); 
 
 // Rutas
 const routes = require("./routes");
@@ -57,7 +60,6 @@ app.use("/favoritos", favoritoRoutes);
 // 👉 DENUNCIAS
 const denunciaRoutes =require("./routes/denunciaRoutes");
 app.use("/denuncias",denunciaRoutes);
-
 
 
 module.exports = app;

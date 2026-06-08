@@ -1,63 +1,60 @@
 const db = require("../models");
 
-const listar = async(req,res)=>{
+const listar = async (req, res) => {
 
- try{
+  try {
 
-  if(!req.session.user){
+    if (!req.session.user) {
 
-   return res.redirect(
-    "/login"
-   );
+      return res.redirect("/login");
+
+    }
+
+    const userId = req.session.user.id;
+
+    await db.Notificacion.update(
+      { leida: true },
+      {
+        where: {
+          user_id: userId,
+          leida: false
+        }
+      }
+    );
+
+    const notificaciones = await db.Notificacion.findAll({
+
+      where: {
+        user_id: userId
+      },
+
+      include: [
+        {
+          model: db.User,
+          as: "actor"
+        }
+      ],
+
+      order: [
+        ["createdAt", "DESC"]
+      ]
+
+    });
+
+    res.render("notificaciones/index", {
+      notificaciones
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.send("Error cargando notificaciones");
 
   }
 
-  const userId =req.session.user.id;
-
-  const notificaciones =
-
-  await db.Notificacion.findAll({
-
-   where:{
-    user_id:userId
-   },
-
-   include:[
-   {
-    model:db.User,
-    as:"actor"
-   }
-   ],
-
-   order:[
-    ["createdAt","DESC"]
-   ]
-
-  });
-
-  res.render(
-
-   "notificaciones/index",
-
-   {
-    notificaciones
-   }
-
-  );
-
- }
- catch(error){
-
-  console.error(error);
-
-  res.send(
-   "Error cargando notificaciones"
-  );
-
- }
-
 };
 
-module.exports={
- listar
+module.exports = {
+  listar
 };

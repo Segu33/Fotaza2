@@ -1,10 +1,16 @@
 nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
+
   .container-fluid
 
-    a.navbar-brand.fw-bold.text-danger.fs-3(
+    a.navbar-brand(
       href="/publicaciones"
     )
-      | Fotaza 2
+
+      img(
+        src="/img/Fotaza2.png"
+        alt="Fotaza 2"
+        style="height:50px;"
+      )
 
     form.d-flex.mx-auto(
       action="/publicaciones"
@@ -25,12 +31,65 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
       )
         | 🏠 Inicio
 
-      a.btn.btn-light.rounded-pill(
-        href="/notificaciones"
-      )
-        | 🔔
-
       if session && session.user
+
+        // NOTIFICACIONES
+        .dropdown
+
+          button.btn.btn-light.rounded-pill.position-relative(
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          )
+            | 🔔
+
+            if notificaciones && notificaciones.length > 0
+
+              span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+                = notificaciones.length
+
+          ul.dropdown-menu.dropdown-menu-end.shadow(
+            style="width:320px;"
+          )
+
+            if notificaciones && notificaciones.length > 0
+
+              each n in notificaciones
+
+                li
+
+                  a.dropdown-item.small(
+                    href=`/publicaciones/${n.publicacion_id}`
+                  )
+
+                    if n.tipo === "comentario"
+                      | 💬 #{n.actor.username} comentó tu publicación
+
+                    else if n.tipo === "valoracion"
+                      | ❤️ #{n.actor.username} dio like a tu publicación
+
+                    else if n.tipo === "follow"
+                      | 👤 #{n.actor.username} comenzó a seguirte
+
+                    else if n.tipo === "interes"
+                      | ⭐ #{n.actor.username} guardó tu publicación
+
+            else
+
+              li
+
+                span.dropdown-item-text.text-muted
+                  | No tienes notificaciones
+
+            li
+              hr.dropdown-divider
+
+            li
+
+              a.dropdown-item.text-center(
+                href="/notificaciones"
+              )
+                | Ver todas
 
         a.btn.btn-primary.rounded-pill(
           href="/publicaciones/crear"
@@ -43,6 +102,6 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
           | Perfil
 
         a.btn.btn-danger.rounded-pill(
-          href="/auth/logout"
+          href="/logout"
         )
           | Salir

@@ -24,7 +24,7 @@ const toggleLike = async (req, res) => {
       });
     }
 
-    res.redirect("/publicaciones");
+    res.redirect(req.get("Referer") || "/publicaciones");
   } catch (error) {
     console.error(error);
     res.send("Error en like");
