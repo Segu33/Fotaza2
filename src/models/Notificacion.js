@@ -9,7 +9,8 @@ module.exports = (sequelize, DataTypes) => {
                     "comentario",
                     "valoracion",
                     "follow",
-                    "interes"
+                    "interes",
+                    "bloqueo",
                 ),
                 allowNull:false
             },

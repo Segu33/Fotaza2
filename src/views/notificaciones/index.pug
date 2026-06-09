@@ -2,57 +2,53 @@ doctype html
 
 html
 
- head
+  head
 
-  title Notificaciones
+    title Notificaciones
 
-  link(
-   href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-   rel="stylesheet"
-  )
+    link(
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    )
 
- body.container.mt-4
+  body.container.mt-4
 
-  h2.mb-4 Mis notificaciones
+    h2.mb-4 Mis notificaciones
 
-  if notificaciones.length===0
+    if notificaciones.length === 0
 
-   .alert.alert-info
+      .alert.alert-info
+        | No tenés notificaciones
 
-    | No tenés notificaciones
+    else
 
-  else
+      each n in notificaciones
 
-   each n in notificaciones
+        .card.mb-3.shadow-sm
 
-    .card.mb-3.shadow-sm
+          .card-body
 
-     .card-body
+            p.mb-2
 
-      p.mb-2
+              strong #{n.actor.username}
 
-       strong #{n.actor.username}
+              if n.tipo === "comentario"
+                |  comentó tu publicación
 
-       if n.tipo==="comentario"
+              else if n.tipo === "follow"
+                |  comenzó a seguirte
 
-        |  comentó tu publicación
+              else if n.tipo === "valoracion"
+                |  valoró tu imagen
 
-       if n.tipo==="follow"
+              else if n.tipo === "interes"
+                |  está interesado en tu imagen
 
-        |  comenzó a seguirte
+              else if n.tipo === "bloqueo"
+                |  tu publicación fue bloqueada por acumulación de denuncias
 
-       if n.tipo==="valoracion"
+              else
+                |  envió una notificación
 
-        |  valoró tu imagen
-
-       if n.tipo==="interes"
-
-        |  está interesado en tu imagen
-
-      if n.tipo==="bloqueo"
-      
-        | tu publicación fue bloqueada por acumulación de denuncias
-
-      small.text-muted
-
-       = new Date(n.createdAt).toLocaleString("es-AR")
+            small.text-muted
+              = new Date(n.createdAt).toLocaleString("es-AR")

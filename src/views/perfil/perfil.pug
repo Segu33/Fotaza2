@@ -1,69 +1,99 @@
-doctype html
+extends ../layouts/main
 
-html
+block content
 
-  head
+  .container.mt-4
 
-    title Perfil
+    .card.shadow-sm.border-0.rounded-4.p-4.mb-4
 
-    link(
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    )
+      .row.align-items-center
 
-  body.container.mt-4
+        .col-md-2.text-center
 
-    h1= usuario.username
+          img.rounded-circle.shadow(
+            src="https://ui-avatars.com/api/?name=#{usuario.username}&background=random&size=200"
+            style="width:120px;height:120px;object-fit:cover;"
+          )
 
-    //- Botón seguir / dejar de seguir
-    if session && session.user && session.user.id !== usuario.id
+        .col-md-7
 
-      if siguiendo
+          h2.mb-2= usuario.username
 
-        form(
-          action=`/follow/dejar-seguir/${usuario.id}`
-          method="POST"
-        )
+          .d-flex.gap-4.mt-3
 
-          button.btn.btn-danger.mb-3(type="submit")
-            Dejar de seguir
+            div
+              strong= publicaciones.length
+              p.mb-0.text-muted Publicaciones
 
-      else
+            div
+              strong= seguidores
+              p.mb-0.text-muted Seguidores
 
-        form(
-          action=`/follow/seguir/${usuario.id}`
-          method="POST"
-        )
+            div
+              strong= seguidos
+              p.mb-0.text-muted Seguidos
 
-          button.btn.btn-primary.mb-3(type="submit")
-            Seguir
+        .col-md-3.text-end
 
-    hr
+          if session && session.user && session.user.id !== usuario.id
 
-    p
-      strong Seguidores:
-      |  #{seguidores}
+            if siguiendo
 
-    p
-      strong Seguidos:
-      |  #{seguidos}
+              form(
+                action=`/follow/dejar-seguir/${usuario.id}`
+                method="POST"
+              )
 
-    hr
+                button.btn.btn-danger.rounded-pill(
+                  type="submit"
+                )
+                  | Dejar de seguir
 
-    h3 Publicaciones
+            else
+
+              form(
+                action=`/follow/seguir/${usuario.id}`
+                method="POST"
+              )
+
+                button.btn.btn-primary.rounded-pill(
+                  type="submit"
+                )
+                  | Seguir
+
+    h3.mb-4 Publicaciones
 
     if publicaciones.length === 0
 
-      p Este usuario no tiene publicaciones
+      .alert.alert-light
+
+        | Este usuario aún no tiene publicaciones.
 
     else
 
-      each pub in publicaciones
+      .row.row-cols-2.row-cols-md-3.row-cols-lg-4.g-4
 
-        .card.mb-3
+        each pub in publicaciones
 
-          .card-body
+          .col
 
-            h5.card-title= pub.titulo
+            a.text-decoration-none(
+              href=`/publicaciones/${pub.id}`
+            )
 
-            p.card-text= pub.descripcion
+              .card.border-0.shadow-sm.h-100
+
+                if pub.imagenes && pub.imagenes.length > 0
+
+                  img.card-img-top(
+                    src=pub.imagenes[0].url
+                    style="height:250px;object-fit:cover;"
+                  )
+
+                .card-body
+
+                  h6.card-title.text-dark.mb-1
+                    = pub.titulo
+
+                  p.card-text.text-muted.small
+                    = pub.descripcion

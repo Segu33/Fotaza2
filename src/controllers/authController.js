@@ -1,7 +1,8 @@
 const bcrypt = require("bcrypt");
 const { User } = require("../models");
 
-// Vistas
+// ================= VISTAS =================
+
 exports.showLogin = (req, res) => {
   res.render("auth/login");
 };
@@ -10,51 +11,131 @@ exports.showRegister = (req, res) => {
   res.render("auth/register");
 };
 
-// Registro
+// ================= REGISTRO =================
+
 exports.register = async (req, res) => {
+
   const { username, email, password } = req.body;
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Verificar email
+    const usuarioExistente = await User.findOne({
+      where: { email }
+    });
+
+    if (usuarioExistente) {
+
+      return res.render("auth/register", {
+        error: "Ya existe una cuenta con ese correo electrónico"
+      });
+
+    }
+
+    // Verificar username
+    const usernameExistente = await User.findOne({
+      where: { username }
+    });
+
+    if (usernameExistente) {
+
+      return res.render("auth/register", {
+        error: "Ese nombre de usuario ya está en uso"
+      });
+
+    }
+
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
 
     await User.create({
+
       username,
       email,
       password: hashedPassword
+
     });
 
     res.redirect("/login");
-  } catch (error) {
-    res.send("Error al registrar");
+
   }
+  catch (error) {
+
+    console.error(error);
+
+    res.render("auth/register", {
+      error: "Error al registrar usuario"
+    });
+
+  }
+
 };
 
-// Login
+// ================= LOGIN =================
+
 exports.login = async (req, res) => {
+
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ where: { email } });
 
-    if (!user) return res.send("Usuario no encontrado");
+    const user = await User.findOne({
+      where: { email }
+    });
 
-    const valid = await bcrypt.compare(password, user.password);
+    if (!user) {
 
-    if (!valid) return res.send("Contraseña incorrecta");
+      return res.render("auth/login", {
+        error: "Usuario o contraseña incorrectos"
+      });
+
+    }
+
+    const valid = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!valid) {
+
+      return res.render("auth/login", {
+        error: "Usuario o contraseña incorrectos"
+      });
+
+    }
 
     req.session.user = {
+
       id: user.id,
       username: user.username
+
     };
 
     res.redirect("/");
-  } catch (error) {
-    res.send("Error en login");
+
   }
+  catch (error) {
+
+    console.error(error);
+
+    res.render("auth/login", {
+      error: "Error al iniciar sesión"
+    });
+
+  }
+
 };
 
-// Logout
+// ================= LOGOUT =================
+
 exports.logout = (req, res) => {
-  req.session.destroy();
-  res.redirect("/login");
+
+  req.session.destroy(() => {
+
+    res.redirect("/login");
+
+  });
+
 };

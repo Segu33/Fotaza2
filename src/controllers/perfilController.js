@@ -20,8 +20,16 @@ const verPerfil = async (req, res) => {
         await db.Publicacion.findAll({
 
             where: {
-                user_id: usuario.id
-            }
+                user_id: usuario.id,
+                bloqueada: false
+            },
+
+            include: [
+                {
+                    model: db.Imagen,
+                    as: "imagenes"
+                }
+            ]
 
         });
 

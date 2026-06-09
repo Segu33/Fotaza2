@@ -10,4 +10,8 @@ router.get(
     "/",authMiddleware,controller.listar
 );
 
+router.get(
+  "/abrir/:id",
+  controller.abrirNotificacion
+);
 module.exports = router;

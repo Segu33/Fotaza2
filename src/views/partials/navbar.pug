@@ -59,7 +59,7 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
                 li
 
                   a.dropdown-item.small(
-                    href=`/publicaciones/${n.publicacion_id}`
+                    href=`/notificaciones/abrir/${n.id}`
                   )
 
                     if n.tipo === "comentario"
@@ -73,6 +73,10 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
 
                     else if n.tipo === "interes"
                       | ⭐ #{n.actor.username} guardó tu publicación
+                    
+                    else if n.tipo === "bloqueo"
+                      | 🚫 Tu publicación fue eliminada por infringir las normas de la comunidad
+                      
 
             else
 

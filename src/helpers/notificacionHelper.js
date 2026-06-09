@@ -47,6 +47,8 @@ async function crearNotificacion({
 
  console.log(nueva.id);
 
+ console.log("TIPO:", nueva.tipo);
+
 }
 
 module.exports={
