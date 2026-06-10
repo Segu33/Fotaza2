@@ -1,0 +1,66 @@
+# =========================
+# Dependencias
+# =========================
+node_modules/
+
+# =========================
+# Variables de entorno
+# =========================
+.env
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Archivos temporales
+# =========================
+.tmp
+.temp
+.cache
+
+# =========================
+# Sistema operativo
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# VS Code
+# =========================
+.vscode/
+
+# =========================
+# JetBrains
+# =========================
+.idea/
+
+# =========================
+# Uploads generados por usuarios
+# =========================
+src/public/uploads/*
+
+# Mantener la carpeta vacía en Git
+!src/public/uploads/.gitkeep
+
+# =========================
+# Archivos de backup
+# =========================
+*.bak
+*.old
+
+# =========================
+# Cobertura de tests
+# =========================
+coverage/
+
+# =========================
+# Archivos Sequelize temporales
+# =========================
+sequelize-meta.json
