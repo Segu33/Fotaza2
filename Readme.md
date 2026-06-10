@@ -6,6 +6,14 @@ Fotaza 2 es una aplicación web desarrollada con Node.js, Express, Sequelize y M
 
 ---
 
+## Despliegue 
+
+La aplicación se encuentra desplegada en Railway y puede accederse desde:
+
+https://fotaza2-production-adec.up.railway.app
+
+
+
 ## 🚀 Tecnologías utilizadas
 
 - Node.js
