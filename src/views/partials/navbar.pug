@@ -2,6 +2,10 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
 
   .container-fluid
 
+    // ==========================
+    // LOGO
+    // ==========================
+
     a.navbar-brand(
       href="/publicaciones"
     )
@@ -11,6 +15,10 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
         alt="Fotaza 2"
         style="height:50px;"
       )
+
+    // ==========================
+    // BUSCADOR
+    // ==========================
 
     form.d-flex.mx-auto(
       action="/publicaciones"
@@ -24,7 +32,13 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
         placeholder="Buscar publicaciones..."
       )
 
+    // ==========================
+    // MENÚ
+    // ==========================
+
     .d-flex.align-items-center.gap-2
+
+      // Inicio
 
       a.btn.btn-light.rounded-pill(
         href="/publicaciones"
@@ -33,7 +47,10 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
 
       if session && session.user
 
+        // ==========================
         // NOTIFICACIONES
+        // ==========================
+
         .dropdown
 
           button.btn.btn-light.rounded-pill.position-relative(
@@ -41,11 +58,13 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
             data-bs-toggle="dropdown"
             aria-expanded="false"
           )
+
             | 🔔
 
             if notificaciones && notificaciones.length > 0
 
               span.position-absolute.top-0.start-100.translate-middle.badge.rounded-pill.bg-danger
+
                 = notificaciones.length
 
           ul.dropdown-menu.dropdown-menu-end.shadow(
@@ -63,29 +82,35 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
                   )
 
                     if n.tipo === "comentario"
+
                       | 💬 #{n.actor.username} comentó tu publicación
 
                     else if n.tipo === "valoracion"
+
                       | ❤️ #{n.actor.username} dio like a tu publicación
 
                     else if n.tipo === "follow"
+
                       | 👤 #{n.actor.username} comenzó a seguirte
 
                     else if n.tipo === "interes"
+
                       | ⭐ #{n.actor.username} guardó tu publicación
-                    
+
                     else if n.tipo === "bloqueo"
+
                       | 🚫 Tu publicación fue eliminada por infringir las normas de la comunidad
-                      
 
             else
 
               li
 
                 span.dropdown-item-text.text-muted
+
                   | No tienes notificaciones
 
             li
+
               hr.dropdown-divider
 
             li
@@ -93,19 +118,48 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
               a.dropdown-item.text-center(
                 href="/notificaciones"
               )
+
                 | Ver todas
+
+        // ==========================
+        // CREAR PUBLICACIÓN
+        // ==========================
 
         a.btn.btn-primary.rounded-pill(
           href="/publicaciones/crear"
         )
+
           | ➕
+
+        // ==========================
+        // PERFIL
+        // ==========================
 
         a.btn.btn-outline-dark.rounded-pill(
           href=`/perfil/${session.user.id}`
         )
-          | Perfil
+
+          | 👤 Perfil
+
+        // ==========================
+        // PANEL ADMINISTRADOR
+        // ==========================
+
+        if session.user.rol === "administrador"
+
+          a.btn.btn-dark.rounded-pill.border.border-warning.border-2(
+            href="/administrador"
+            title="Centro de Administración"
+          )
+
+            | 🛡 Administración
+
+        // ==========================
+        // CERRAR SESIÓN
+        // ==========================
 
         a.btn.btn-danger.rounded-pill(
           href="/logout"
         )
-          | Salir
+
+          | 🚪 Salir

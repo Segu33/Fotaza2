@@ -1,0 +1,150 @@
+doctype html
+
+html
+
+  head
+
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    title Caso de Moderación
+
+    link(
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    )
+
+    link(
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    )
+
+  body.bg-light
+
+    .container.py-5
+
+      h1.text-center.fw-bold.mb-5
+
+        i.bi.bi-folder2-open.me-2.text-danger
+
+        | Expediente del Caso
+
+      .row
+
+        .col-lg-7
+
+          .card.shadow.border-0.mb-4
+
+            if publicacion.imagenes.length
+
+              img.card-img-top(
+                src="/uploads/" + publicacion.imagenes[0].ruta
+                style="max-height:550px;object-fit:cover;"
+              )
+
+            .card-body
+
+              h3
+
+                = publicacion.titulo
+
+              hr
+
+              p
+
+                strong Autor:
+
+                | #{publicacion.usuario.username}
+
+              p
+
+                strong Descripción
+
+              p.text-muted
+
+                = publicacion.descripcion
+
+        .col-lg-5
+
+          .card.shadow.border-0.mb-4
+
+            .card-header.bg-dark.text-white
+
+              h4.mb-0
+
+                i.bi.bi-exclamation-triangle-fill.me-2
+
+                | Estado del caso
+
+            .card-body
+
+              p
+
+                strong Denuncias recibidas
+
+              h2.text-danger
+
+                = totalDenuncias
+
+              hr
+
+              p
+
+                strong Estado actual
+
+              span.badge.bg-warning.text-dark.fs-6
+
+                Pendiente de revisión
+
+              hr
+
+              p
+
+                strong Moderador
+
+              p.text-muted
+
+                Administrador
+
+              hr
+
+              h5
+
+                Motivos
+
+              .alert.alert-secondary.mb-4
+
+                Esta información estará disponible en la siguiente versión del sistema.
+
+              form(
+                action="/administrador/publicaciones/" + publicacion.id + "/aprobar"
+                method="POST"
+              )
+
+                button.btn.btn-success.w-100.mb-3
+
+                  i.bi.bi-check-circle-fill.me-2
+
+                  | Aprobar publicación
+
+              form(
+                action="/administrador/publicaciones/" + publicacion.id + "/eliminar"
+                method="POST"
+                onsubmit="return confirm('¿Está seguro de eliminar esta publicación?')"
+              )
+
+                button.btn.btn-danger.w-100
+
+                  i.bi.bi-trash3-fill.me-2
+
+                  | Dar de baja publicación
+
+      .mt-4
+
+        a.btn.btn-outline-secondary(
+          href="/administrador/publicaciones"
+        )
+
+          i.bi.bi-arrow-left.me-2
+
+          | Volver al Centro de Moderación

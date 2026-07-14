@@ -74,7 +74,6 @@ exports.register = async (req, res) => {
 };
 
 // ================= LOGIN =================
-
 exports.login = async (req, res) => {
 
   const { email, password } = req.body;
@@ -89,6 +88,15 @@ exports.login = async (req, res) => {
 
       return res.render("auth/login", {
         error: "Usuario o contraseña incorrectos"
+      });
+
+    }
+
+    // Verificar si el usuario está activo
+    if (!user.activo) {
+
+      return res.render("auth/login", {
+        error: "Tu cuenta ha sido desactivada. Contactá a un administrador."
       });
 
     }
@@ -109,7 +117,8 @@ exports.login = async (req, res) => {
     req.session.user = {
 
       id: user.id,
-      username: user.username
+      username: user.username,
+      rol: user.rol
 
     };
 
@@ -127,7 +136,6 @@ exports.login = async (req, res) => {
   }
 
 };
-
 // ================= LOGOUT =================
 
 exports.logout = (req, res) => {

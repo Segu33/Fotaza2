@@ -1,0 +1,165 @@
+doctype html
+
+html
+
+  head
+
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    title Centro de Moderación | Fotaza2
+
+    link(
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    )
+
+    link(
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    )
+
+  body.bg-light
+
+    .container.py-5
+
+      //=========================
+      // ENCABEZADO
+      //=========================
+
+      .d-flex.justify-content-between.align-items-center.mb-5
+
+        div
+
+          h1.fw-bold.mb-2
+
+            i.bi.bi-shield-lock-fill.text-danger.me-2
+
+            | Centro de Moderación
+
+          if casos && casos.length > 0
+
+            p.text-muted.mb-0
+
+              = `${casos.length} caso(s) pendiente(s) de revisión`
+
+          else
+
+            p.text-muted.mb-0
+
+              | No existen casos pendientes.
+
+        a.btn.btn-outline-secondary(
+          href="/administrador"
+        )
+
+          i.bi.bi-arrow-left.me-2
+
+          | Volver al panel
+
+      //=========================
+      // CONTENIDO
+      //=========================
+
+      if !casos || casos.length === 0
+
+        .alert.alert-success.shadow.text-center.p-4
+
+          h4.mb-3
+
+            i.bi.bi-check-circle-fill.text-success.me-2
+
+            | Excelente trabajo
+
+          p.mb-0
+
+            | No existen publicaciones pendientes de revisión.
+
+      else
+
+        .row.g-4
+
+          each caso in casos
+
+            .col-lg-6
+
+              .card.shadow.border-0.h-100
+
+                if caso.publicacion.imagenes && caso.publicacion.imagenes.length > 0
+
+                  img.card-img-top(
+                    src=`/uploads/${caso.publicacion.imagenes[0].ruta}`
+                    style="height:260px;object-fit:cover;"
+                  )
+
+                .card-body
+
+                  .d-flex.justify-content-between.align-items-start.mb-3
+
+                    h4.mb-0
+
+                      = caso.publicacion.titulo
+
+                    span.badge(class=`bg-${caso.prioridad.color}`)
+
+                      = caso.prioridad.texto
+
+                  hr
+
+                  p.mb-2
+
+                    strong
+
+                      i.bi.bi-person-fill.me-2
+
+                      | Autor:
+
+                    | #{caso.publicacion.usuario.username}
+
+                  p.mb-2
+
+                    strong
+
+                      i.bi.bi-exclamation-triangle-fill.text-danger.me-2
+
+                      | Denuncias:
+
+                    span.badge.bg-danger.ms-2
+
+                      = caso.totalDenuncias
+
+                  p.mb-3
+
+                    strong
+
+                      i.bi.bi-clock-history.me-2
+
+                      | Estado:
+
+                    span.badge.bg-warning.text-dark.ms-2
+
+                      | Pendiente
+
+                  if caso.publicacion.descripcion
+
+                    p.text-muted
+
+                      if caso.publicacion.descripcion.length > 150
+
+                        = caso.publicacion.descripcion.substring(0,150) + "..."
+
+                      else
+
+                        = caso.publicacion.descripcion
+
+                .card-footer.bg-white.border-0
+
+                  .d-grid
+
+                    a.btn.btn-primary(
+                      href=`/administrador/publicaciones/${caso.publicacion.id}`
+                    )
+
+                      i.bi.bi-folder2-open.me-2
+
+                      | Revisar caso

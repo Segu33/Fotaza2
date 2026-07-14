@@ -62,4 +62,8 @@ const denunciaRoutes =require("./routes/denunciaRoutes");
 app.use("/denuncias",denunciaRoutes);
 
 
+// 👉 ADMINISTRADOR 
+const administradorRoutes = require("./routes/administradorRoutes");
+app.use("/administrador", administradorRoutes);
+
 module.exports = app;

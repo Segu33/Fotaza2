@@ -1,0 +1,165 @@
+doctype html
+
+html
+
+  head
+
+    title Centro de Administración | Fotaza2
+
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+
+    link(
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    )
+
+  body.bg-light
+
+    .container.py-5
+
+      // ================= HEADER =================
+
+      .text-center.mb-5
+
+        h1.fw-bold.text-dark
+          | 📷 Fotaza2
+
+        h3.text-secondary
+          | Centro de Administración
+
+        if session && session.user
+
+          p.text-muted.mt-3
+            | Bienvenido,
+            strong  #{session.user.username}
+
+      // ================= ESTADÍSTICAS =================
+
+      .row.g-4.mb-5
+
+        // Moderación
+
+        .col-md-3
+
+          .card.border-danger.shadow.h-100
+
+            .card-body.text-center
+
+              h1.display-4.text-danger
+                = publicacionesPendientes
+
+              h5.mt-3
+                | 🚨 Casos pendientes
+
+              p.text-muted
+                | Publicaciones esperando revisión.
+
+              a.btn.btn-danger(
+                href="/administrador/publicaciones"
+              )
+                | Revisar
+
+        // Usuarios
+
+        .col-md-3
+
+          .card.border-primary.shadow.h-100
+
+            .card-body.text-center
+
+              h1.display-4.text-primary
+                = totalUsuarios
+
+              h5.mt-3
+                | 👥 Usuarios
+
+              p.text-muted
+                | Usuarios activos registrados.
+
+              button.btn.btn-outline-primary.mt-2(
+                disabled
+              )
+                | Próximamente
+
+        // Publicaciones
+
+        .col-md-3
+
+          .card.border-success.shadow.h-100
+
+            .card-body.text-center
+
+              h1.display-4.text-success
+                = totalPublicaciones
+
+              h5.mt-3
+                | 📷 Publicaciones
+
+              p.text-muted
+                | Publicaciones creadas.
+
+              button.btn.btn-outline-success.mt-2(
+                disabled
+              )
+                | Próximamente
+
+        // Comentarios
+
+        .col-md-3
+
+          .card.border-warning.shadow.h-100
+
+            .card-body.text-center
+
+              h1.display-4.text-warning
+                = totalComentarios
+
+              h5.mt-3
+                | 💬 Comentarios
+
+              p.text-muted
+                | Comentarios registrados.
+
+              button.btn.btn-outline-warning.mt-2(
+                disabled
+              )
+                | Próximamente
+
+      // ================= ACTIVIDAD =================
+
+      .card.shadow.mb-4
+
+        .card-header.bg-dark.text-white
+
+          h5.mb-0
+            | 📊 Actividad del sistema
+
+        .card-body
+
+          p.text-muted.mb-2
+            | Este panel permitirá visualizar la actividad reciente de la plataforma.
+
+          ul.mb-0
+
+            li Registro de nuevos usuarios.
+
+            li Publicaciones creadas.
+
+            li Denuncias recibidas.
+
+            li Acciones realizadas por administradores.
+
+      // ================= NAVEGACIÓN =================
+
+      .d-flex.justify-content-between
+
+        a.btn.btn-secondary(
+          href="/"
+        )
+          | ← Volver al inicio
+
+        a.btn.btn-outline-danger(
+          href="/logout"
+        )
+          | Cerrar sesión
