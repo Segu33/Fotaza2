@@ -80,6 +80,64 @@ html(lang="es")
 
       include ../partials/navbar
 
+    // ===============================
+    // MENSAJES DEL SISTEMA
+    // ===============================
+
+    if session && session.mensaje
+
+      .container.mt-3
+
+        if session.mensaje.tipo == "success"
+
+          .alert.alert-success.alert-dismissible.fade.show(
+            role="alert"
+          )
+
+            strong ✔
+
+            |  #{session.mensaje.texto}
+
+            button.btn-close(
+              type="button"
+              data-bs-dismiss="alert"
+              aria-label="Cerrar"
+            )
+
+        else if session.mensaje.tipo == "warning"
+
+          .alert.alert-warning.alert-dismissible.fade.show(
+            role="alert"
+          )
+
+            strong ⚠
+
+            |  #{session.mensaje.texto}
+
+            button.btn-close(
+              type="button"
+              data-bs-dismiss="alert"
+              aria-label="Cerrar"
+            )
+
+        else if session.mensaje.tipo == "danger"
+
+          .alert.alert-danger.alert-dismissible.fade.show(
+            role="alert"
+          )
+
+            strong ✖
+
+            |  #{session.mensaje.texto}
+
+            button.btn-close(
+              type="button"
+              data-bs-dismiss="alert"
+              aria-label="Cerrar"
+            )
+
+        - session.mensaje = null
+
     .container-fluid.mt-4
 
       block content

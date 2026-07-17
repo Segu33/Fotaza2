@@ -1,5 +1,38 @@
 const db = require("../models");
 const { crearNotificacion } = require("../helpers/notificacionHelper");
+
+// ==========================================
+// Mostrar formulario de denuncia
+// ==========================================
+
+const formularioDenuncia = async (req, res) => {
+
+  try {
+
+    const imagen = await db.Imagen.findByPk(req.params.imagen_id);
+
+    if (!imagen) {
+      return res.redirect("/publicaciones");
+    }
+
+    res.render("denuncias/crear", {
+      imagen_id: imagen.id,
+      publicacion_id: imagen.publicacion_id
+    });
+
+  } catch (error) {
+
+    console.error(error);
+    res.redirect("/publicaciones");
+
+  }
+
+};
+
+// ==========================================
+// Crear denuncia
+// ==========================================
+
 const crearDenuncia = async (req, res) => {
 
   try {
@@ -8,10 +41,16 @@ const crearDenuncia = async (req, res) => {
       return res.redirect("/login");
     }
 
-    const { imagen_id, motivo, descripcion } = req.body;
+    const {
+      imagen_id,
+      publicacion_id,
+      motivo,
+      descripcion
+    } = req.body;
 
     const userId = req.session.user.id;
 
+    // Verificar si el usuario ya denunció esta imagen
     const existe = await db.Denuncia.findOne({
       where: {
         user_id: userId,
@@ -20,9 +59,17 @@ const crearDenuncia = async (req, res) => {
     });
 
     if (existe) {
-      return res.redirect("/publicaciones");
+
+      req.session.mensaje = {
+        tipo: "warning",
+        texto: "Ya denunciaste esta publicación."
+      };
+
+      return res.redirect(`/publicaciones/${publicacion_id}`);
+
     }
 
+    // Crear denuncia
     await db.Denuncia.create({
       motivo,
       descripcion,
@@ -30,41 +77,51 @@ const crearDenuncia = async (req, res) => {
       imagen_id
     });
 
-    // CONTAR DENUNCIAS DE ESA IMAGEN
+    // Contar denuncias de la imagen
     const totalDenuncias = await db.Denuncia.count({
       where: {
         imagen_id
       }
     });
 
-    // SI LLEGA A 3 -> BLOQUEAR PUBLICACIÓN
+    // Si llega a 3 denuncias -> bloquear publicación
     if (totalDenuncias >= 3) {
 
-  const imagen = await db.Imagen.findByPk(imagen_id);
+      const imagen = await db.Imagen.findByPk(imagen_id);
 
-  if (imagen) {
+      if (imagen) {
 
-    const publicacion = await db.Publicacion.findByPk(
-      imagen.publicacion_id
-    );
+        const publicacion = await db.Publicacion.findByPk(
+          imagen.publicacion_id
+        );
 
-    await publicacion.update({
-      bloqueada: true
-    });
+        if (publicacion) {
 
-    await crearNotificacion({
+          await publicacion.update({
+            bloqueada: true
+          });
 
-      receptorId: publicacion.user_id,
-      actorId: userId,
-      tipo: "bloqueo"
+          await crearNotificacion({
+            receptorId: publicacion.user_id,
+            actorId: userId,
+            tipo: "bloqueo"
+          });
 
-    });
+          console.log("🚫 Publicación bloqueada por exceso de denuncias");
 
-    console.log("🚫 Publicación bloqueada por exceso de denuncias");
-  }
-}
+        }
 
-    res.redirect(req.get("Referer") || "/publicaciones");
+      }
+
+    }
+
+    // Mensaje de éxito
+    req.session.mensaje = {
+      tipo: "success",
+      texto: "Su reporte ha sido enviado para revisión."
+    };
+
+    return res.redirect(`/publicaciones/${publicacion_id}`);
 
   } catch (error) {
 
@@ -76,5 +133,6 @@ const crearDenuncia = async (req, res) => {
 };
 
 module.exports = {
+  formularioDenuncia,
   crearDenuncia
 };

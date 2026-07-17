@@ -1,0 +1,99 @@
+extends ../layouts/main
+
+block content
+
+  .container.mt-5
+
+    .row.justify-content-center
+
+      .col-lg-7
+
+        .card.shadow-lg.border-0.rounded-4
+
+          .card-header.bg-danger.text-white.py-3
+
+            h3.mb-0
+              | 🚩 Reportar publicación
+
+          .card-body.p-4
+
+            p.text-muted
+              | Tu denuncia será revisada por el equipo de moderación.
+              | Elegí el motivo que mejor describa el problema.
+
+            form(
+              action="/denuncias/crear"
+              method="POST"
+            )
+
+              // ID de la imagen
+              input(
+                type="hidden"
+                name="imagen_id"
+                value=imagen_id
+              )
+
+              // ID de la publicación (para volver luego del reporte)
+              input(
+                type="hidden"
+                name="publicacion_id"
+                value=publicacion_id
+              )
+
+              .mb-4
+
+                label.form-label.fw-bold
+                  | Motivo *
+
+                select.form-select(
+                  name="motivo"
+                  required
+                )
+
+                  option(value="")
+                    | Seleccionar motivo...
+
+                  option(value="Spam")
+                    | 📢 Spam
+
+                  option(value="Contenido ofensivo")
+                    | 🚫 Contenido ofensivo
+
+                  option(value="Acoso")
+                    | 😠 Acoso
+
+                  option(value="Información falsa")
+                    | ⚠️ Información falsa
+
+                  option(value="Violencia")
+                    | 🔥 Violencia
+
+                  option(value="Derechos de autor")
+                    | ©️ Derechos de autor
+
+                  option(value="Otro")
+                    | 📝 Otro
+
+              .mb-4
+
+                label.form-label.fw-bold
+                  | Descripción (opcional)
+
+                textarea.form-control(
+                  name="descripcion"
+                  rows="5"
+                  maxlength="500"
+                  placeholder="Explicá brevemente el motivo de la denuncia..."
+                )
+
+              .d-flex.justify-content-between
+
+                a.btn.btn-secondary(
+                  href=`/publicaciones/${publicacion_id}`
+                )
+                  | Cancelar
+
+                button.btn.btn-danger(
+                  type="submit"
+                )
+                  | 🚩 Enviar denuncia

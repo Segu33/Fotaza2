@@ -11,7 +11,9 @@ require("../middlewares/adminMiddleware");
 const administradorController =
 require("../controllers/administradorController");
 
-// Dashboard
+// =======================================
+// DASHBOARD
+// =======================================
 
 router.get(
 
@@ -25,7 +27,9 @@ router.get(
 
 );
 
-// Centro de moderación
+// =======================================
+// CENTRO DE MODERACIÓN
+// =======================================
 
 router.get(
 
@@ -36,6 +40,54 @@ router.get(
     adminMiddleware,
 
     administradorController.publicaciones
+
+);
+
+// =======================================
+// VER EXPEDIENTE DEL CASO
+// =======================================
+
+router.get(
+
+    "/publicaciones/:id",
+
+    authMiddleware,
+
+    adminMiddleware,
+
+    administradorController.verCaso
+
+);
+
+// =======================================
+// APROBAR PUBLICACIÓN
+// =======================================
+
+router.post(
+
+    "/publicaciones/:id/aprobar",
+
+    authMiddleware,
+
+    adminMiddleware,
+
+    administradorController.aprobarPublicacion
+
+);
+
+// =======================================
+// DAR DE BAJA PUBLICACIÓN
+// =======================================
+
+router.post(
+
+    "/publicaciones/:id/dar-de-baja",
+
+    authMiddleware,
+
+    adminMiddleware,
+
+    administradorController.darDeBajaPublicacion
 
 );
 

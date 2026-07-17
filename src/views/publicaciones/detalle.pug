@@ -85,35 +85,11 @@ block content
                 | ⭐ #{img.favoritos ? img.favoritos.length : 0}
 
             // DENUNCIA
-            form(
-              action="/denuncias/crear"
-              method="POST"
-              class="m-0"
+            a.btn.btn-link.text-danger.text-decoration-none.p-0(
+              href=`/denuncias/crear/${img.id}`
+              title="Reportar publicación"
             )
-
-              input(
-                type="hidden"
-                name="imagen_id"
-                value=img.id
-              )
-
-              input(
-                type="hidden"
-                name="motivo"
-                value="Contenido inapropiado"
-              )
-
-              input(
-                type="hidden"
-                name="descripcion"
-                value="Denuncia desde detalle"
-              )
-
-              button.btn.btn-link.text-danger.text-decoration-none.p-0(
-                type="submit"
-                title="Reportar publicación"
-              )
-                | 🚩 Reportar
+              | 🚩 Reportar
 
           hr
 
