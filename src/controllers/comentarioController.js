@@ -4,72 +4,112 @@ const {
   crearNotificacion
 } = require("../helpers/notificacionHelper");
 
-const crearComentario = async (req,res)=>{
+const crearComentario = async (req, res) => {
 
-  try{
+  try {
 
     const {
       texto,
       publicacion_id
     } = req.body;
 
-    const userId=req.session.user.id;
+    const userId = req.session.user.id;
+
+    // Buscar la publicación
+    const publicacion = await db.Publicacion.findByPk(publicacion_id);
+
+    if (!publicacion) {
+
+      return res.send("Publicación no encontrada");
+
+    }
+
+    // Verificar si los comentarios están habilitados
+    if (!publicacion.comentarios_habilitados) {
+
+      return res.redirect(req.get("Referer") || "/publicaciones");
+
+    }
 
     await db.Comentario.create({
 
       texto,
 
-      user_id:userId,
+      user_id: userId,
 
       publicacion_id
 
     });
 
-    // buscar dueño publicación
+    // Crear notificación al dueño de la publicación
+    await crearNotificacion({
 
-    const publicacion =
-    await db.Publicacion.findByPk(
-      publicacion_id
-    );
-     console.log("PUBLICACION");
+      receptorId: publicacion.user_id,
 
-    console.log(publicacion);
-    if(publicacion){
+      actorId: userId,
 
-      await crearNotificacion({
+      tipo: "comentario",
 
-        receptorId:
-        publicacion.user_id,
+      publicacionId: publicacion.id
 
-        actorId:
-        userId,
+    });
 
-        tipo:"comentario",
+    res.redirect(req.get("Referer") || "/publicaciones");
 
-        publicacionId:
-        publicacion.id
-
-      });
-
-    }
-
-   res.redirect(req.get("Referer") || "/publicaciones");
-
-  }
-  catch(error){
+  } catch (error) {
 
     console.error(error);
 
-    res.send(
-      "Error al comentar"
-    );
+    res.send("Error al comentar");
 
   }
 
 };
 
-module.exports={
+const eliminarComentario = async (req, res) => {
 
-  crearComentario
+  try {
+
+    const comentario = await db.Comentario.findByPk(req.params.id, {
+
+      include: [
+        {
+          model: db.Publicacion,
+          as: "publicacion"
+        }
+      ]
+
+    });
+
+    if (!comentario) {
+
+      return res.redirect(req.get("Referer") || "/publicaciones");
+
+    }
+
+    if (comentario.publicacion.user_id !== req.session.user.id) {
+
+      return res.status(403).send("No autorizado");
+
+    }
+
+    await comentario.destroy();
+
+    res.redirect(req.get("Referer") || "/publicaciones");
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.redirect(req.get("Referer") || "/publicaciones");
+
+  }
+
+};
+
+module.exports = {
+
+  crearComentario,
+  eliminarComentario
 
 };

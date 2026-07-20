@@ -33,6 +33,20 @@ block content
               strong= seguidos
               p.mb-0.text-muted Seguidos
 
+          if session && session.user && session.user.id === usuario.id
+
+            .mt-4.d-flex.gap-2.flex-wrap
+
+              a.btn.btn-outline-warning(
+                href="/favoritos"
+              )
+                | ⭐ Mis Favoritos
+
+              a.btn.btn-outline-primary(
+                href="/colecciones"
+              )
+                | 📁 Mis Colecciones
+
         .col-md-3.text-end
 
           if session && session.user && session.user.id !== usuario.id

@@ -283,6 +283,19 @@ const darDeBajaPublicacion = async (req, res) => {
 
         // Incrementar contador del usuario
         await publicacion.usuario.increment("publicaciones_bajadas");
+        // Recargar el usuario para obtener el nuevo valor
+        await publicacion.usuario.reload();
+
+       // Si llegó a 3 publicaciones dadas de baja, desactivar la cuenta
+        if (publicacion.usuario.publicaciones_bajadas >= 3) {
+
+        await publicacion.usuario.update({
+
+        activo: false
+
+    });
+
+}
 
         res.redirect("/administrador/publicaciones");
 

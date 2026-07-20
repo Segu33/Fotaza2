@@ -1,0 +1,44 @@
+extends ../layouts/main
+
+block content
+
+  .container.mt-4
+
+    h2.mb-4 ⭐ Mis Favoritos
+
+    if favoritos.length === 0
+
+      .alert.alert-info.shadow-sm
+        | Todavía no guardaste ninguna publicación como favorita.
+
+    else
+
+      .row.row-cols-1.row-cols-sm-2.row-cols-md-3.row-cols-lg-4.g-4
+
+        each favorito in favoritos
+
+          .col
+
+            .card.shadow-sm.border-0.h-100
+
+              img.card-img-top(
+                src=favorito.imagen.url
+                style="height:250px;object-fit:cover;"
+              )
+
+              .card-body.text-center
+
+                if favorito.imagen.publicacion
+
+                  h6.card-title.mb-3
+                    = favorito.imagen.publicacion.titulo
+
+                  a.btn.btn-primary(
+                    href=`/publicaciones/${favorito.imagen.publicacion.id}`
+                  )
+                    | Ver publicación
+
+                else
+
+                  span.text-muted
+                    | Publicación no disponible

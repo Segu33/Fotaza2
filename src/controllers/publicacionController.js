@@ -108,7 +108,8 @@ const listarPublicaciones = async (req, res) => {
 
   }
 };
-   const verPublicacion = async (req, res) => {
+
+const verPublicacion = async (req, res) => {
 
   try {
 
@@ -187,9 +188,39 @@ const listarPublicaciones = async (req, res) => {
 
   }
 };
-  
+
+const toggleComentarios = async (req, res) => {
+
+  try {
+
+    const publicacion = await db.Publicacion.findByPk(req.params.id);
+
+    if (!publicacion) {
+      return res.send("Publicación no encontrada");
+    }
+
+    if (publicacion.user_id !== req.session.user.id) {
+      return res.status(403).send("No autorizado");
+    }
+
+    await publicacion.update({
+      comentarios_habilitados: !publicacion.comentarios_habilitados,
+    });
+
+    res.redirect(`/publicaciones/${publicacion.id}`);
+
+  } catch (error) {
+
+    console.error(error);
+    res.send("Error al actualizar comentarios");
+
+  }
+
+};
+
 module.exports = {
   crearPublicacion,
   listarPublicaciones,
-  verPublicacion
+  verPublicacion,
+  toggleComentarios
 };
