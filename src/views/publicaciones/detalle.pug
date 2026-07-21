@@ -33,8 +33,11 @@ block content
 
           hr
 
+          // ==========================
           // ACCIONES
-          .d-flex.align-items-center.gap-4.mb-4
+          // ==========================
+
+          .d-flex.justify-content-between.align-items-center.mb-4
 
             // LIKE
             form(
@@ -49,37 +52,80 @@ block content
                 value=img.id
               )
 
-              button.btn.btn-link.text-danger.text-decoration-none.p-0(
+              button.btn.btn-link.text-danger.text-decoration-none.p-0.fs-5(
                 type="submit"
                 title="Me gusta"
               )
                 | ❤️ #{img.valoraciones ? img.valoraciones.length : 0}
 
-            // FAVORITOS
-            form(
-              action="/favoritos/toggle"
-              method="POST"
-              class="m-0"
-            )
+            // MÁS OPCIONES
+            .dropdown
 
-              input(
-                type="hidden"
-                name="imagen_id"
-                value=img.id
+              button.btn.btn-light.btn-sm.rounded-circle.shadow-sm(
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                title="Más opciones"
               )
+                | ⋮
 
-              button.btn.btn-link.text-warning.text-decoration-none.p-0(
-                type="submit"
-                title="Favoritos"
-              )
-                | ⭐ #{img.favoritos ? img.favoritos.length : 0}
+              ul.dropdown-menu.dropdown-menu-end.shadow
 
-            // DENUNCIA
-            a.btn.btn-link.text-danger.text-decoration-none.p-0(
-              href=`/denuncias/crear/${img.id}`
-              title="Reportar publicación"
-            )
-              | 🚩 Reportar
+                li
+                  a.dropdown-item(
+                    href=`/colecciones/agregar/${publicacion.id}`
+                  )
+                    | 📁 Guardar en colección
+
+                li
+
+                  form(
+                    action="/favoritos/toggle"
+                    method="POST"
+                    class="m-0"
+                  )
+
+                    input(
+                      type="hidden"
+                      name="imagen_id"
+                      value=img.id
+                    )
+
+                    button.dropdown-item(
+                      type="submit"
+                    )
+                      | ⭐ #{yaFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
+
+                li
+                  a.dropdown-item.text-danger(
+                    href=`/denuncias/crear/${img.id}`
+                  )
+                    | 🚩 Denunciar
+
+                if session.user && session.user.id === publicacion.user_id
+
+                  li
+                    hr.dropdown-divider
+
+                  li
+                    a.dropdown-item(
+                      href=`/publicaciones/editar/${publicacion.id}`
+                    )
+                      | ✏️ Editar publicación
+
+                  li
+
+                    form(
+                      action=`/publicaciones/eliminar/${publicacion.id}`
+                      method="POST"
+                      class="m-0"
+                      onsubmit="return confirm('¿Eliminar esta publicación?')"
+                    )
+
+                      button.dropdown-item.text-danger(
+                        type="submit"
+                      )
+                        | 🗑 Eliminar publicación
 
           hr
 

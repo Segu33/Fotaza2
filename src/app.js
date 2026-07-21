@@ -66,4 +66,8 @@ app.use("/denuncias",denunciaRoutes);
 const administradorRoutes = require("./routes/administradorRoutes");
 app.use("/administrador", administradorRoutes);
 
+// 👉 COLECCIONES
+const coleccionRoutes = require("./routes/coleccionRoutes");
+app.use("/colecciones", coleccionRoutes);
+
 module.exports = app;

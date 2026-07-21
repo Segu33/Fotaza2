@@ -32,6 +32,7 @@ db.Coleccion = require("./Coleccion")(sequelize, Sequelize);
 db.Favorito = require("./Favorito")(sequelize, Sequelize);
 db.Interes = require("./Interes")(sequelize, Sequelize);
 db.Denuncia = require("./Denuncia")(sequelize, Sequelize);
+db.ColeccionPublicacion = require("./ColeccionPublicacion")(sequelize, Sequelize);
 
 // ================= RELACIONES =================
 
@@ -152,16 +153,18 @@ db.Coleccion.belongsTo(db.User,{
     as:"usuario"
 });
 
-db.Coleccion.belongsToMany(db.Publicacion,{
-    through:db.Favorito,
-    foreignKey:"coleccion_id",
-    as:"publicaciones"
+db.Coleccion.belongsToMany(db.Publicacion, {
+    through: db.ColeccionPublicacion,
+    foreignKey: "coleccion_id",
+    otherKey: "publicacion_id",
+    as: "publicaciones"
 });
 
-db.Publicacion.belongsToMany(db.Coleccion,{
-    through:db.Favorito,
-    foreignKey:"publicacion_id",
-    as:"colecciones"
+db.Publicacion.belongsToMany(db.Coleccion, {
+    through: db.ColeccionPublicacion,
+    foreignKey: "publicacion_id",
+    otherKey: "coleccion_id",
+    as: "colecciones"
 });
 
 // 🎯 Intereses

@@ -1,0 +1,59 @@
+extends ../layouts/main
+
+block content
+
+  .container.mt-4
+
+    h2.mb-4
+      | 📁 Guardar publicación
+
+    if colecciones.length === 0
+
+      .alert.alert-warning
+
+        p.mb-3
+          | Todavía no tenés colecciones creadas.
+
+        a.btn.btn-primary(
+          href="/colecciones"
+        )
+          | Crear una colección
+
+    else
+
+      .card.shadow-sm
+
+        .card-body
+
+          p
+            | Seleccioná una colección para guardar esta publicación.
+
+          form(
+            action="/colecciones/agregar"
+            method="POST"
+          )
+
+            input(
+              type="hidden"
+              name="publicacion_id"
+              value=publicacion.id
+            )
+
+            each coleccion in colecciones
+
+              .form-check.mb-3
+
+                input.form-check-input(
+                  type="radio"
+                  name="coleccion_id"
+                  value=coleccion.id
+                  required
+                )
+
+                label.form-check-label
+                  | #{coleccion.nombre}
+
+            button.btn.btn-primary.mt-3(
+              type="submit"
+            )
+              | 💾 Guardar en la colección
