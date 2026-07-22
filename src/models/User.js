@@ -1,5 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
   return sequelize.define("User", {
+
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -21,6 +22,16 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+
+    foto_perfil: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+
+    biografia: {
+      type: DataTypes.TEXT,
+      allowNull: true
     },
 
     activo: {

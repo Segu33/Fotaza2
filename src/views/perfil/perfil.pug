@@ -8,46 +8,138 @@ block content
 
       .row.align-items-center
 
-        .col-md-2.text-center
+        //=========================
+        // FOTO DE PERFIL
+        //=========================
 
-          img.rounded-circle.shadow(
-            src="https://ui-avatars.com/api/?name=#{usuario.username}&background=random&size=200"
-            style="width:120px;height:120px;object-fit:cover;"
-          )
+        .col-lg-2.col-md-3.text-center.mb-3.mb-md-0
 
-        .col-md-7
+          if usuario.foto_perfil
 
-          h2.mb-2= usuario.username
+            img.rounded-circle.shadow(
+              src=usuario.foto_perfil
+              alt="Foto de perfil"
+              style="width:150px;height:150px;object-fit:cover;"
+            )
 
-          .d-flex.gap-4.mt-3
+          else
 
-            div
-              strong= publicaciones.length
-              p.mb-0.text-muted Publicaciones
+            img.rounded-circle.shadow(
+              src=`https://ui-avatars.com/api/?name=${encodeURIComponent(usuario.username)}&background=random&size=300`
+              alt="Avatar"
+              style="width:150px;height:150px;object-fit:cover;"
+            )
 
-            div
-              strong= seguidores
-              p.mb-0.text-muted Seguidores
+        //=========================
+        // INFORMACIÓN DEL PERFIL
+        //=========================
 
-            div
-              strong= seguidos
-              p.mb-0.text-muted Seguidos
+        .col-lg-7.col-md-6
+
+          .d-flex.justify-content-between.align-items-start
+
+            h2.fw-bold.mb-0= usuario.username
+
+            if session && session.user && session.user.id === usuario.id
+
+              .dropdown
+
+                button.btn.p-0.border-0.bg-transparent.shadow-none(
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  title="Opciones"
+                )
+                  span.fs-2.fw-bold ⋮
+
+                ul.dropdown-menu.dropdown-menu-end.shadow
+
+                  li
+
+                    a.dropdown-item(
+                      href="/perfil/editar"
+                    )
+
+                      i.bi.bi-pencil-square.me-2
+
+                      | Editar perfil
+
+                  li
+
+                    hr.dropdown-divider
+
+                  li
+
+                    a.dropdown-item.disabled(
+                      href="#"
+                    )
+
+                      i.bi.bi-key.me-2
+
+                      | Cambiar contraseña
+
+                  li
+
+                    a.dropdown-item.disabled(
+                      href="#"
+                    )
+
+                      i.bi.bi-gear.me-2
+
+                      | Configuración
+
+          .d-flex.gap-5.mt-4
+
+            .text-center
+
+              h4.mb-0= publicaciones.length
+
+              small.text-muted Publicaciones
+
+            .text-center
+
+              h4.mb-0= seguidores
+
+              small.text-muted Seguidores
+
+            .text-center
+
+              h4.mb-0= seguidos
+
+              small.text-muted Seguidos
+
+          if usuario.biografia
+
+            .mt-4
+
+              p.text-secondary.mb-0(style="white-space:pre-line;")
+                = usuario.biografia
 
           if session && session.user && session.user.id === usuario.id
 
-            .mt-4.d-flex.gap-2.flex-wrap
+            .mt-4.d-flex.flex-wrap.gap-2
 
               a.btn.btn-outline-warning(
                 href="/favoritos"
               )
-                | ⭐ Mis Favoritos
+
+                i.bi.bi-star-fill.me-2
+
+                | Mis Favoritos
 
               a.btn.btn-outline-primary(
                 href="/colecciones"
               )
-                | 📁 Mis Colecciones
 
-        .col-md-3.text-end
+                i.bi.bi-folder-fill.me-2
+
+                | Mis Colecciones
+
+        //=========================
+        // BOTÓN SEGUIR
+        //=========================
+
+        .col-lg-3.col-md-3.text-md-end.text-center.mt-4.mt-md-0
 
           if session && session.user && session.user.id !== usuario.id
 
@@ -61,7 +153,10 @@ block content
                 button.btn.btn-danger.rounded-pill(
                   type="submit"
                 )
-                  | Dejar de seguir
+
+                  i.bi.bi-check-circle.me-2
+
+                  | Siguiendo
 
             else
 
@@ -73,15 +168,34 @@ block content
                 button.btn.btn-primary.rounded-pill(
                   type="submit"
                 )
+
+                  i.bi.bi-person-plus.me-2
+
                   | Seguir
 
-    h3.mb-4 Publicaciones
+    hr.my-4 
+
+    h2.mb-4
+    
+      i.bi.bi-camera-fill.me-2
+
+      | Publicaciones
 
     if publicaciones.length === 0
 
-      .alert.alert-light
+      .card.border-0.shadow-sm.rounded-4
 
-        | Este usuario aún no tiene publicaciones.
+        .card-body.py-5.text-center
+
+          i.bi.bi-images.display-3.text-muted.mb-3
+
+          h4.text-muted
+
+            | Todavía no hay publicaciones
+
+          p.text-muted.mb-0
+
+            | Este usuario aún no compartió ninguna publicación.
 
     else
 
@@ -91,23 +205,45 @@ block content
 
           .col
 
-            a.text-decoration-none(
-              href=`/publicaciones/${pub.id}`
-            )
+            .card.border-0.shadow-sm.rounded-4.h-100
 
-              .card.border-0.shadow-sm.h-100
+              a(
+                href=`/publicaciones/${pub.id}`
+                style="text-decoration:none;"
+              )
 
                 if pub.imagenes && pub.imagenes.length > 0
 
-                  img.card-img-top(
+                  img.card-img-top.rounded-top-4(
                     src=pub.imagenes[0].url
-                    style="height:250px;object-fit:cover;"
+                    alt=pub.titulo
+                    style="height:250px;object-fit:cover;transition:.25s;"
+                    onmouseover="this.style.transform='scale(1.03)'"
+                    onmouseout="this.style.transform='scale(1)'"
                   )
 
-                .card-body
+                else
 
-                  h6.card-title.text-dark.mb-1
+                  .d-flex.justify-content-center.align-items-center.bg-light.rounded-top-4(
+                    style="height:250px;"
+                  )
+
+                    .text-center.text-muted
+
+                      i.bi.bi-image.display-6.d-block.mb-2
+
+                      | Sin imagen
+
+              .card-body
+
+                if pub.titulo
+
+                  h6.fw-bold.mb-2.text-dark
+
                     = pub.titulo
 
-                  p.card-text.text-muted.small
+                if pub.descripcion
+
+                  p.text-muted.small.mb-0
+
                     = pub.descripcion

@@ -1,0 +1,157 @@
+extends ../layouts/main
+
+block content
+
+    .container.py-5(style="max-width:700px")
+
+        .card.shadow.border-0.rounded-4
+
+            .card-body.p-5
+
+                h2.text-center.fw-bold.mb-5
+                    i.bi.bi-pencil-square.me-2
+                    | Editar Perfil
+
+                form(
+                    action="/perfil/editar"
+                    method="POST"
+                    enctype="multipart/form-data"
+                )
+
+                    //=========================
+                    // FOTO DE PERFIL
+                    //=========================
+
+                    .text-center.mb-5
+
+                        if usuario.foto_perfil
+
+                            img#preview(
+                                src=usuario.foto_perfil
+                                alt="Foto de perfil"
+                                width="160"
+                                height="160"
+                                style="border-radius:50%;object-fit:cover;border:5px solid #dee2e6;"
+                            )
+
+                        else
+
+                            img#preview(
+                                src="/img/default-user.png"
+                                alt="Foto de perfil"
+                                width="160"
+                                height="160"
+                                style="border-radius:50%;object-fit:cover;border:5px solid #dee2e6;"
+                            )
+
+                        input(
+                            type="file"
+                            id="foto"
+                            name="foto"
+                            accept="image/png,image/jpeg,image/jpg"
+                            hidden
+                        )
+
+                        br
+
+                        label.btn.btn-outline-primary.mt-4(for="foto")
+                            i.bi.bi-camera-fill.me-2
+                            | Cambiar foto
+
+                    hr.mb-5
+
+                    //=========================
+                    // USUARIO
+                    //=========================
+
+                    .mb-4
+
+                        label.form-label.fw-semibold(for="username")
+                            | Nombre de usuario
+
+                        input.form-control.form-control-lg(
+                            id="username"
+                            type="text"
+                            name="username"
+                            value=usuario.username
+                            required
+                        )
+
+                    //=========================
+                    // EMAIL
+                    //=========================
+
+                    .mb-4
+
+                        label.form-label.fw-semibold(for="email")
+                            | Correo electrónico
+
+                        input.form-control.form-control-lg(
+                            id="email"
+                            type="email"
+                            name="email"
+                            value=usuario.email
+                            required
+                        )
+
+                    //=========================
+                    // BIOGRAFÍA
+                    //=========================
+
+                    .mb-5
+
+                        label.form-label.fw-semibold(for="biografia")
+                            | Biografía
+
+                        textarea.form-control(
+                            id="biografia"
+                            name="biografia"
+                            rows="5"
+                            placeholder="Contale a la comunidad quién sos..."
+                        )= usuario.biografia
+
+                    hr
+
+                    .d-flex.justify-content-between.mt-4
+
+                        a.btn.btn-outline-secondary(
+                            href=`/perfil/${usuario.id}`
+                        )
+                            i.bi.bi-arrow-left.me-2
+                            | Cancelar
+
+                        button.btn.btn-primary(
+                            type="submit"
+                        )
+                            i.bi.bi-check-circle.me-2
+                            | Guardar cambios
+
+
+block scripts
+
+    script.
+
+        const inputFoto = document.getElementById("foto");
+        const preview = document.getElementById("preview");
+
+        if(inputFoto){
+
+            inputFoto.addEventListener("change",function(){
+
+                const archivo = this.files[0];
+
+                if(!archivo) return;
+
+                const reader = new FileReader();
+
+                reader.onload = function(e){
+
+                    preview.src = e.target.result;
+
+                };
+
+                reader.readAsDataURL(archivo);
+
+            });
+
+        }

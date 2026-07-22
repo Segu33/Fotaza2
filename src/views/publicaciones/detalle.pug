@@ -13,33 +13,74 @@ block content
 
       .row.g-0
 
+        //===================================
         // IMAGEN PRINCIPAL
+        //===================================
+
         .col-lg-5
 
           img.rounded-4(
             src=img.url
-            style="width:100%; max-height:500px; object-fit:contain;"
+            style="width:100%;max-height:600px;object-fit:contain;"
           )
 
+        //===================================
         // PANEL DERECHO
+        //===================================
+
         .col-lg-5.p-4
+
+          //=========================
+          // AUTOR
+          //=========================
+
+          .d-flex.align-items-center.mb-4
+
+            a(
+              href=`/perfil/${publicacion.usuario.id}`
+              class="text-decoration-none"
+            )
+
+              if publicacion.usuario.foto_perfil
+
+                img.rounded-circle.shadow-sm.me-3(
+                  src=publicacion.usuario.foto_perfil
+                  alt=publicacion.usuario.username
+                  style="width:55px;height:55px;object-fit:cover;"
+                )
+
+              else
+
+                img.rounded-circle.shadow-sm.me-3(
+                  src=`https://ui-avatars.com/api/?name=${encodeURIComponent(publicacion.usuario.username)}&background=random&size=120`
+                  alt=publicacion.usuario.username
+                  style="width:55px;height:55px;object-fit:cover;"
+                )
+
+            .flex-grow-1
+
+              a.text-decoration-none.text-dark.fw-bold(
+                href=`/perfil/${publicacion.usuario.id}`
+              )
+                = publicacion.usuario.username
+
+              br
+
+              small.text-muted
+                | Ver perfil
 
           h2.mb-2= publicacion.titulo
 
-          p.text-muted.mb-2= publicacion.descripcion
-
-          p.small.text-muted
-            | Publicado por #{publicacion.usuario.username}
+          p.text-muted.mb-3= publicacion.descripcion
 
           hr
 
-          // ==========================
+          //=========================
           // ACCIONES
-          // ==========================
+          //=========================
 
           .d-flex.justify-content-between.align-items-center.mb-4
 
-            // LIKE
             form(
               action="/valoraciones/like"
               method="POST"
@@ -56,25 +97,27 @@ block content
                 type="submit"
                 title="Me gusta"
               )
+
                 | ❤️ #{img.valoraciones ? img.valoraciones.length : 0}
 
-            // MÁS OPCIONES
             .dropdown
 
               button.btn.btn-light.btn-sm.rounded-circle.shadow-sm(
                 type="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                title="Más opciones"
               )
+
                 | ⋮
 
               ul.dropdown-menu.dropdown-menu-end.shadow
 
                 li
+
                   a.dropdown-item(
                     href=`/colecciones/agregar/${publicacion.id}`
                   )
+
                     | 📁 Guardar en colección
 
                 li
@@ -94,23 +137,29 @@ block content
                     button.dropdown-item(
                       type="submit"
                     )
+
                       | ⭐ #{yaFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
 
                 li
+
                   a.dropdown-item.text-danger(
                     href=`/denuncias/crear/${img.id}`
                   )
+
                     | 🚩 Denunciar
 
                 if session.user && session.user.id === publicacion.user_id
 
                   li
+
                     hr.dropdown-divider
 
                   li
+
                     a.dropdown-item(
                       href=`/publicaciones/editar/${publicacion.id}`
                     )
+
                       | ✏️ Editar publicación
 
                   li
@@ -125,17 +174,20 @@ block content
                       button.dropdown-item.text-danger(
                         type="submit"
                       )
+
                         | 🗑 Eliminar publicación
 
           hr
 
-          // ==========================
+          //===================================
           // COMENTARIOS
-          // ==========================
+          //===================================
+
 
           .d-flex.justify-content-between.align-items-center.mb-3
 
-            h5.mb-0 Comentarios
+            h5.mb-0
+              | Comentarios
 
             if session.user && session.user.id === publicacion.user_id
 
@@ -162,20 +214,47 @@ block content
           if publicacion.comentarios && publicacion.comentarios.length > 0
 
             .overflow-auto(
-              style="max-height:300px;"
+              style="max-height:320px;"
             )
 
               each comentario in publicacion.comentarios
 
-                .border-bottom.py-2
+                .border-bottom.py-3
 
                   .d-flex.justify-content-between.align-items-start
 
-                    div
+                    .d-flex
 
-                      strong.small= comentario.usuario.username
+                      a(
+                        href=`/perfil/${comentario.usuario.id}`
+                        class="text-decoration-none"
+                      )
 
-                      p.small.mb-0= comentario.texto
+                        if comentario.usuario.foto_perfil
+
+                          img.rounded-circle.me-3(
+                            src=comentario.usuario.foto_perfil
+                            alt=comentario.usuario.username
+                            style="width:42px;height:42px;object-fit:cover;"
+                          )
+
+                        else
+
+                          img.rounded-circle.me-3(
+                            src=`https://ui-avatars.com/api/?name=${encodeURIComponent(comentario.usuario.username)}&background=random&size=100`
+                            alt=comentario.usuario.username
+                            style="width:42px;height:42px;object-fit:cover;"
+                          )
+
+                      div
+
+                        a.text-decoration-none.text-dark.fw-semibold.small(
+                          href=`/perfil/${comentario.usuario.id}`
+                        )
+                          = comentario.usuario.username
+
+                        p.small.mb-0.mt-1
+                          = comentario.texto
 
                     if session.user && session.user.id === publicacion.user_id
 
@@ -195,7 +274,7 @@ block content
           else
 
             p.text-muted.small
-              | No hay comentarios
+              | Todavía no hay comentarios.
 
           if publicacion.comentarios_habilitados
 
@@ -213,14 +292,14 @@ block content
 
               .input-group
 
-                input.form-control.form-control-sm(
+                input.form-control(
                   type="text"
                   name="texto"
                   placeholder="Escribí un comentario..."
                   required
                 )
 
-                button.btn.btn-primary.btn-sm(
+                button.btn.btn-primary(
                   type="submit"
                 )
                   | Enviar
@@ -228,9 +307,13 @@ block content
           else
 
             .alert.alert-warning.mt-3.mb-0
+
               | Los comentarios están deshabilitados para esta publicación.
 
-        // RELACIONADAS LATERALES
+        //===================================
+        // RELACIONADAS
+        //===================================
+
         .col-lg-2.p-3
 
           h6.text-muted.mb-3
@@ -251,8 +334,9 @@ block content
 
     hr.my-5
 
-    // MÁS COMO ESTO
-    h2.mb-4 Más como esto
+    h2.mb-4
+
+      | Más como esto
 
     .row.row-cols-2.row-cols-md-4.g-3
 
