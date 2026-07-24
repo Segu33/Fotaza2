@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
                     "follow",
                     "interes",
                     "bloqueo",
+                    "mensaje",
                 ),
                 allowNull:false
             },
@@ -38,7 +39,12 @@ module.exports = (sequelize, DataTypes) => {
             imagen_id:{
                 type:DataTypes.INTEGER,
                 allowNull:true
-            }
+            },
+
+            conversacion_id: {
+               type: DataTypes.INTEGER,
+               allowNull: true
+            },
 
         },
         {

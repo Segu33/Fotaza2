@@ -24,31 +24,47 @@ html
 
       each n in notificaciones
 
-        .card.mb-3.shadow-sm
+        a(
+          href=`/notificaciones/abrir/${n.id}`
+          class="text-decoration-none text-dark"
+        )
 
-          .card-body
+          .card.mb-3.shadow-sm
 
-            p.mb-2
+            .card-body
 
-              strong #{n.actor.username}
+              p.mb-2
 
-              if n.tipo === "comentario"
-                |  comentó tu publicación
+                strong #{n.actor.username}
 
-              else if n.tipo === "follow"
-                |  comenzó a seguirte
+                if n.tipo === "comentario"
 
-              else if n.tipo === "valoracion"
-                |  valoró tu imagen
+                  |  comentó tu publicación
 
-              else if n.tipo === "interes"
-                |  está interesado en tu imagen
+                else if n.tipo === "follow"
 
-              else if n.tipo === "bloqueo"
-                |  tu publicación fue bloqueada por acumulación de denuncias
+                  |  comenzó a seguirte
 
-              else
-                |  envió una notificación
+                else if n.tipo === "valoracion"
 
-            small.text-muted
-              = new Date(n.createdAt).toLocaleString("es-AR")
+                  |  valoró tu imagen
+
+                else if n.tipo === "interes"
+
+                  |  está interesado en tu imagen
+
+                else if n.tipo === "bloqueo"
+
+                  |  tu publicación fue bloqueada por acumulación de denuncias
+
+                else if n.tipo === "mensaje"
+
+                  |  te envió un mensaje privado 💬
+
+                else
+
+                  |  envió una notificación
+
+              small.text-muted
+
+                = new Date(n.createdAt).toLocaleString("es-AR")

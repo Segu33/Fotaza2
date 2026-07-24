@@ -1,0 +1,66 @@
+extends ../layouts/main
+
+block content
+
+  .container.py-4
+
+    .row.justify-content-center
+
+      .col-lg-8
+
+        .card.shadow.border-0.rounded-4
+
+          .card-header.bg-white
+
+            h3.mb-0
+              | 💬 Mensajes
+
+          .list-group.list-group-flush
+
+            if conversaciones.length === 0
+
+              .p-5.text-center.text-muted
+
+                h5
+                  | Todavía no tenés conversaciones
+
+                p.mb-0
+                  | Visitá el perfil de un usuario y presioná "Mensaje".
+
+            else
+
+              each conversacion in conversaciones
+
+                -
+                  const otro = conversacion.usuario1_id === usuarioId
+                    ? conversacion.usuario2
+                    : conversacion.usuario1
+
+                a.list-group-item.list-group-item-action.py-3(
+                  href=`/mensajes/${conversacion.id}`
+                )
+
+                  .d-flex.align-items-center
+
+                    if otro.foto_perfil
+
+                      img.rounded-circle.me-3(
+                        src=otro.foto_perfil
+                        style="width:55px;height:55px;object-fit:cover;"
+                      )
+
+                    else
+
+                      img.rounded-circle.me-3(
+                        src=`https://ui-avatars.com/api/?name=${encodeURIComponent(otro.username)}&background=random`
+                        style="width:55px;height:55px;object-fit:cover;"
+                      )
+
+                    .flex-grow-1
+
+                      h5.mb-1= otro.username
+
+                      small.text-muted
+                        | Abrir conversación
+
+                    i.fs-4.text-muted →

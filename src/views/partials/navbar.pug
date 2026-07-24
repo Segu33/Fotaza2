@@ -100,6 +100,10 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
                     else if n.tipo === "bloqueo"
 
                       | 🚫 Tu publicación fue eliminada por infringir las normas de la comunidad
+                      
+                    else if n.tipo === "mensaje"
+
+                      | 💬 #{n.actor.username} te envió un mensaje
 
             else
 
@@ -155,11 +159,13 @@ nav.navbar.navbar-expand-lg.bg-white.border-bottom.shadow-sm.sticky-top
             | 🛡 Administración
 
         // ==========================
-        // CERRAR SESIÓN
+        // MENSAJES
         // ==========================
 
-        a.btn.btn-danger.rounded-pill(
-          href="/logout"
+        a.btn.btn-outline-primary.rounded-pill(
+          href="/mensajes"
         )
 
-          | 🚪 Salir
+          | 💬 Mensajes
+
+          

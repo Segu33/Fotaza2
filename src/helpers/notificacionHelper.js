@@ -2,55 +2,42 @@ const db = require("../models");
 
 async function crearNotificacion({
 
- receptorId,
- actorId,
- tipo,
- publicacionId=null,
- imagenId=null
+    receptorId,
+    actorId,
+    tipo,
+    publicacionId = null,
+    imagenId = null,
+    conversacionId = null
 
-}){
+}) {
 
- console.log("HELPER EJECUTADO");
+    console.log("TIPO RECIBIDO:", tipo);
 
- console.log({
-  receptorId,
-  actorId,
-  tipo,
-  publicacionId,
-  imagenId
- });
+    if (receptorId === actorId) {
+        return;
+    }
 
- if(receptorId===actorId){
+    const nueva = await db.Notificacion.create({
 
-   console.log("MISMO USUARIO");
+        user_id: receptorId,
 
-   return;
- }
+        actor_id: actorId,
 
- const nueva=
+        tipo,
 
- await db.Notificacion.create({
+        publicacion_id: publicacionId,
 
-   user_id:receptorId,
+        imagen_id: imagenId,
 
-   actor_id:actorId,
+        conversacion_id: conversacionId
 
-   tipo,
+    });
 
-   publicacion_id:publicacionId,
-
-   imagen_id:imagenId
-
- });
-
- console.log("NOTIFICACION CREADA");
-
- console.log(nueva.id);
-
- console.log("TIPO:", nueva.tipo);
+    console.log("NOTIFICACIÓN CREADA:");
+    console.log(nueva.toJSON());
 
 }
 
-module.exports={
- crearNotificacion
+module.exports = {
+    crearNotificacion
 };

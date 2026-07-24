@@ -33,6 +33,8 @@ db.Favorito = require("./Favorito")(sequelize, Sequelize);
 db.Interes = require("./Interes")(sequelize, Sequelize);
 db.Denuncia = require("./Denuncia")(sequelize, Sequelize);
 db.ColeccionPublicacion = require("./ColeccionPublicacion")(sequelize, Sequelize);
+db.Conversacion = require("./Conversacion")(sequelize, Sequelize);
+db.Mensaje = require("./Mensaje")(sequelize, Sequelize);
 
 // ================= RELACIONES =================
 
@@ -281,6 +283,67 @@ db.Favorito.belongsTo(db.User,{
     as:"usuario"
 });
 
+//  Conversaciones
+
+db.User.hasMany(db.Conversacion, {
+    foreignKey: "usuario1_id",
+    as: "conversacionesComoUsuario1",
+    onDelete: "CASCADE"
+});
+
+db.User.hasMany(db.Conversacion, {
+    foreignKey: "usuario2_id",
+    as: "conversacionesComoUsuario2",
+    onDelete: "CASCADE"
+});
+
+db.Conversacion.belongsTo(db.User, {
+    foreignKey: "usuario1_id",
+    as: "usuario1"
+});
+
+db.Conversacion.belongsTo(db.User, {
+    foreignKey: "usuario2_id",
+    as: "usuario2"
+});
+
+//  Mensajes
+
+db.Conversacion.hasMany(db.Mensaje, {
+    foreignKey: "conversacion_id",
+    as: "mensajes",
+    onDelete: "CASCADE"
+});
+
+db.Mensaje.belongsTo(db.Conversacion, {
+    foreignKey: "conversacion_id",
+    as: "conversacion"
+});
+
+db.User.hasMany(db.Mensaje, {
+    foreignKey: "remitente_id",
+    as: "mensajesEnviados",
+    onDelete: "CASCADE"
+});
+
+db.Mensaje.belongsTo(db.User, {
+    foreignKey: "remitente_id",
+    as: "remitente"
+});
+
+
+// 🔔 Notificaciones de mensajes
+
+db.Conversacion.hasMany(db.Notificacion, {
+    foreignKey: "conversacion_id",
+    as: "notificacionesMensajes",
+    onDelete: "CASCADE"
+});
+
+db.Notificacion.belongsTo(db.Conversacion, {
+    foreignKey: "conversacion_id",
+    as: "conversacion"
+});
 // ================= CONEXIÓN =================
 
 sequelize.authenticate()

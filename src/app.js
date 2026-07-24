@@ -70,4 +70,8 @@ app.use("/administrador", administradorRoutes);
 const coleccionRoutes = require("./routes/coleccionRoutes");
 app.use("/colecciones", coleccionRoutes);
 
+// 👉 MENSAJES 
+const mensajeRoutes = require("./routes/mensajeRoutes");
+app.use("/mensajes", mensajeRoutes);
+
 module.exports = app;

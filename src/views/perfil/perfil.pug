@@ -136,42 +136,52 @@ block content
                 | Mis Colecciones
 
         //=========================
-        // BOTÓN SEGUIR
+        // ACCIONES
         //=========================
 
         .col-lg-3.col-md-3.text-md-end.text-center.mt-4.mt-md-0
 
           if session && session.user && session.user.id !== usuario.id
 
-            if siguiendo
+            .d-grid.gap-2
 
-              form(
-                action=`/follow/dejar-seguir/${usuario.id}`
-                method="POST"
-              )
+              if siguiendo
 
-                button.btn.btn-danger.rounded-pill(
-                  type="submit"
+                form(
+                  action=`/follow/dejar-seguir/${usuario.id}`
+                  method="POST"
                 )
 
-                  i.bi.bi-check-circle.me-2
+                  button.btn.btn-danger.w-100.rounded-pill(
+                    type="submit"
+                  )
 
-                  | Siguiendo
+                    i.bi.bi-check-circle.me-2
 
-            else
+                    | Siguiendo
 
-              form(
-                action=`/follow/seguir/${usuario.id}`
-                method="POST"
-              )
+              else
 
-                button.btn.btn-primary.rounded-pill(
-                  type="submit"
+                form(
+                  action=`/follow/seguir/${usuario.id}`
+                  method="POST"
                 )
 
-                  i.bi.bi-person-plus.me-2
+                  button.btn.btn-primary.w-100.rounded-pill(
+                    type="submit"
+                  )
 
-                  | Seguir
+                    i.bi.bi-person-plus.me-2
+
+                    | Seguir
+
+              a.btn.btn-outline-dark.w-100.rounded-pill(
+                href=`/mensajes/nuevo/${usuario.id}`
+              )
+
+                i.bi.bi-chat-dots-fill.me-2
+
+                | Mensaje
 
     hr.my-4 
 

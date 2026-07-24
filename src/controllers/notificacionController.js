@@ -2,100 +2,132 @@ const db = require("../models");
 
 const listar = async (req, res) => {
 
-  try {
+    try {
 
-    if (!req.session.user) {
+        if (!req.session.user) {
+            return res.redirect("/login");
+        }
 
-      return res.redirect("/login");
+        const userId = req.session.user.id;
+
+        await db.Notificacion.update(
+
+            { leida: true },
+
+            {
+
+                where: {
+
+                    user_id: userId,
+
+                    leida: false
+
+                }
+
+            }
+
+        );
+
+        const notificaciones = await db.Notificacion.findAll({
+
+            where: {
+
+                user_id: userId
+
+            },
+
+            include: [
+
+                {
+
+                    model: db.User,
+
+                    as: "actor"
+
+                }
+
+            ],
+
+            order: [
+
+                ["createdAt", "DESC"]
+
+            ]
+
+        });
+
+        res.render("notificaciones/index", {
+
+            notificaciones
+
+        });
 
     }
+    catch (error) {
 
-    const userId = req.session.user.id;
+        console.error(error);
 
-    await db.Notificacion.update(
-      { leida: true },
-      {
-        where: {
-          user_id: userId,
-          leida: false
-        }
-      }
-    );
+        res.send("Error cargando notificaciones");
 
-    const notificaciones = await db.Notificacion.findAll({
-
-      where: {
-        user_id: userId
-      },
-
-      include: [
-        {
-          model: db.User,
-          as: "actor"
-        }
-      ],
-
-      order: [
-        ["createdAt", "DESC"]
-      ]
-
-    });
-
-    res.render("notificaciones/index", {
-      notificaciones
-    });
-
-  } catch (error) {
-
-    console.error(error);
-
-    res.send("Error cargando notificaciones");
-
-  }
+    }
 
 };
+
 const abrirNotificacion = async (req, res) => {
 
-  try {
+    try {
 
-    const notificacion =
-    await db.Notificacion.findByPk(
-      req.params.id
-    );
+        const notificacion = await db.Notificacion.findByPk(req.params.id);
 
-    if (!notificacion) {
+        if (!notificacion) {
+            return res.redirect("/publicaciones");
+        }
 
-      return res.redirect(
-        "/publicaciones"
-      );
+        await notificacion.update({
+            leida: true
+        });
+
+        //==========================
+        // NOTIFICACIÓN DE MENSAJE
+        //==========================
+
+        if (notificacion.conversacion_id) {
+
+            return res.redirect(
+                `/mensajes/${notificacion.conversacion_id}`
+            );
+
+        }
+
+        //==========================
+        // NOTIFICACIÓN DE PUBLICACIÓN
+        //==========================
+
+        if (notificacion.publicacion_id) {
+
+            return res.redirect(
+                `/publicaciones/${notificacion.publicacion_id}`
+            );
+
+        }
+
+        res.redirect("/publicaciones");
 
     }
+    catch (error) {
 
-    await notificacion.update({
-      leida: true
-    });
+        console.error(error);
 
-    if (notificacion.publicacion_id) {
-
-      return res.redirect(
-        `/publicaciones/${notificacion.publicacion_id}`
-      );
+        res.redirect("/publicaciones");
 
     }
-
-    res.redirect("/publicaciones");
-
-  }
-  catch (error) {
-
-    console.error(error);
-
-    res.redirect("/publicaciones");
-
-  }
 
 };
 
 module.exports = {
-  listar, abrirNotificacion
+
+    listar,
+
+    abrirNotificacion
+
 };
