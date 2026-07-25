@@ -62,13 +62,22 @@ const verPerfil = async (req, res) => {
             siguiendo = !!follow;
         }
 
+        // ===========================
+        // Mensaje de éxito temporal
+        // ===========================
+
+        const success = req.session.success;
+
+        delete req.session.success;
+
         res.render("perfil/perfil", {
             usuario,
             publicaciones,
             seguidores,
             seguidos,
             siguiendo,
-            session: req.session
+            session: req.session,
+            success
         });
 
     } catch (error) {
@@ -229,33 +238,28 @@ const cambiarPassword = async (req, res) => {
 
         const passwordHash = await bcrypt.hash(passwordNueva, 10);
 
-        await usuario.update({
+await usuario.update({
 
-            password: passwordHash
+    password: passwordHash
 
-        });
+});
+req.session.success = "✅ Contraseña actualizada correctamente.";
+return res.redirect(`/perfil/${usuario.id}`);
 
-        res.render("perfil/cambiarPassword", {
+} catch (error) {
 
-            session: req.session,
-            error: null,
-            success: "La contraseña fue actualizada correctamente."
+    console.error(error);
 
-        });
+    return res.render("perfil/cambiarPassword", {
 
-    } catch (error) {
+        session: req.session,
+        error: "Ocurrió un error al cambiar la contraseña.",
+        success: null
 
-        console.error(error);
+    });
 
-        res.render("perfil/cambiarPassword", {
+}
 
-            session: req.session,
-            error: "Ocurrió un error al cambiar la contraseña.",
-            success: null
-
-        });
-
-    }
 
 };
 

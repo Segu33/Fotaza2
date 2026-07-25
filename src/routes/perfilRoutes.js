@@ -20,17 +20,7 @@ router.post(
     perfilController.actualizarPerfil
 );
 
-// Ver perfil
-router.get(
-    "/:id",
-    authMiddleware,
-    perfilController.verPerfil
-);
-
-
-// CAMBIAR CONTRASEÑA
-
-
+// Cambiar contraseña
 router.get(
     "/cambiar-password",
     authMiddleware,
@@ -41,5 +31,12 @@ router.post(
     "/cambiar-password",
     authMiddleware,
     perfilController.cambiarPassword
+);
+
+// Ver perfil (SIEMPRE AL FINAL)
+router.get(
+    "/:id",
+    authMiddleware,
+    perfilController.verPerfil
 );
 module.exports = router;
