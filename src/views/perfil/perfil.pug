@@ -70,23 +70,21 @@ block content
 
                   li
 
-                    a.dropdown-item.disabled(
-                      href="#"
-                    )
+                    a.dropdown-item(
+    href="/perfil/cambiar-password"
+)
+  i.bi.bi-key.me-2
+  | Cambiar contraseña
 
-                      i.bi.bi-key.me-2
+    li
 
-                      | Cambiar contraseña
+      a.dropdown-item.text-danger(
+        href="/logout"
+      )
 
-                  li
+        i.bi.bi-box-arrow-right.me-2
 
-                    a.dropdown-item.text-danger(
-                      href="/logout"
-                    )
-
-                      i.bi.bi-box-arrow-right.me-2
-
-                      | Cerrar sesión
+        | Cerrar sesión
 
           .d-flex.gap-5.mt-4
 
@@ -183,77 +181,77 @@ block content
 
                 | Mensaje
 
-    hr.my-4
+  hr.my-4
 
-    h2.mb-4
+  h2.mb-4
 
-      i.bi.bi-camera-fill.me-2
+    i.bi.bi-camera-fill.me-2
 
-      | Publicaciones
+    | Publicaciones
 
-    if publicaciones.length === 0
+  if publicaciones.length === 0
 
-      .card.border-0.shadow-sm.rounded-4
+    .card.border-0.shadow-sm.rounded-4
 
-        .card-body.py-5.text-center
+      .card-body.py-5.text-center
 
-          i.bi.bi-images.display-3.text-muted.mb-3
+        i.bi.bi-images.display-3.text-muted.mb-3
 
-          h4.text-muted
+        h4.text-muted
 
-            | Todavía no hay publicaciones
+          | Todavía no hay publicaciones
 
-          p.text-muted.mb-0
+        p.text-muted.mb-0
 
-            | Este usuario aún no compartió ninguna publicación.
+          | Este usuario aún no compartió ninguna publicación.
 
-    else
+  else
 
-      .row.row-cols-2.row-cols-md-3.row-cols-lg-4.g-4
+    .row.row-cols-2.row-cols-md-3.row-cols-lg-4.g-4
 
-        each pub in publicaciones
+      each pub in publicaciones
 
-          .col
+        .col
 
-            .card.border-0.shadow-sm.rounded-4.h-100
+          .card.border-0.shadow-sm.rounded-4.h-100
 
-              a(
-                href=`/publicaciones/${pub.id}`
-                style="text-decoration:none;"
-              )
+            a(
+              href=`/publicaciones/${pub.id}`
+              style="text-decoration:none;"
+            )
 
-                if pub.imagenes && pub.imagenes.length > 0
+              if pub.imagenes && pub.imagenes.length > 0
 
-                  img.card-img-top.rounded-top-4(
-                    src=pub.imagenes[0].url
-                    alt=pub.titulo
-                    style="height:250px;object-fit:cover;transition:.25s;"
-                    onmouseover="this.style.transform='scale(1.03)'"
-                    onmouseout="this.style.transform='scale(1)'"
-                  )
+                img.card-img-top.rounded-top-4(
+                  src=pub.imagenes[0].url
+                  alt=pub.titulo
+                  style="height:250px;object-fit:cover;transition:.25s;"
+                  onmouseover="this.style.transform='scale(1.03)'"
+                  onmouseout="this.style.transform='scale(1)'"
+                )
 
-                else
+              else
 
-                  .d-flex.justify-content-center.align-items-center.bg-light.rounded-top-4(
-                    style="height:250px;"
-                  )
+                .d-flex.justify-content-center.align-items-center.bg-light.rounded-top-4(
+                  style="height:250px;"
+                )
 
-                    .text-center.text-muted
+                  .text-center.text-muted
 
-                      i.bi.bi-image.display-6.d-block.mb-2
+                    i.bi.bi-image.display-6.d-block.mb-2
 
-                      | Sin imagen
+                    | Sin imagen
 
-              .card-body
+            .card-body
 
-                if pub.titulo
+              if pub.titulo
 
-                  h6.fw-bold.mb-2.text-dark
+                h6.fw-bold.mb-2.text-dark
 
-                    = pub.titulo
+                  = pub.titulo
 
-                if pub.descripcion
+              if pub.descripcion
 
-                  p.text-muted.small.mb-0
+                p.text-muted.small.mb-0
 
-                    = pub.descripcion
+                  = pub.descripcion

@@ -90,5 +90,14 @@ router.post(
     administradorController.darDeBajaPublicacion
 
 );
+// =======================================
+// GESTIONAR USUARIOS
+// =======================================
 
+router.get("/usuarios", administradorController.listarUsuarios);
+
+router.post(
+    "/usuarios/:id/estado",
+    administradorController.cambiarEstadoUsuario
+);
 module.exports = router;

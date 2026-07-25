@@ -22,6 +22,10 @@ block content
             enctype="multipart/form-data"
           )
 
+            //=========================
+            // TÍTULO
+            //=========================
+
             .mb-3
 
               label.form-label
@@ -34,6 +38,10 @@ block content
                 required
               )
 
+            //=========================
+            // DESCRIPCIÓN
+            //=========================
+
             .mb-3
 
               label.form-label
@@ -44,6 +52,28 @@ block content
                 rows="4"
                 placeholder="Describe tu publicación..."
               )
+
+            //=========================
+            // ETIQUETAS
+            //=========================
+
+            .mb-3
+
+              label.form-label
+                | Etiquetas
+
+              input.form-control(
+                type="text"
+                name="etiquetas"
+                placeholder="Ej: tecnología, pc, gaming, hardware"
+              )
+
+              .form-text
+                | Separá las etiquetas con comas.
+
+            //=========================
+            // IMAGEN
+            //=========================
 
             .mb-4
 

@@ -27,4 +27,19 @@ router.get(
     perfilController.verPerfil
 );
 
+
+// CAMBIAR CONTRASEÑA
+
+
+router.get(
+    "/cambiar-password",
+    authMiddleware,
+    perfilController.mostrarCambiarPassword
+);
+
+router.post(
+    "/cambiar-password",
+    authMiddleware,
+    perfilController.cambiarPassword
+);
 module.exports = router;

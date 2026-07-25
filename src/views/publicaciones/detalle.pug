@@ -73,6 +73,15 @@ block content
 
           p.text-muted.mb-3= publicacion.descripcion
 
+          if publicacion.etiquetas && publicacion.etiquetas.length
+
+            .mb-3
+
+              each etiqueta in publicacion.etiquetas
+
+                span.badge.bg-secondary.me-1.mb-1
+                  | ##{etiqueta.nombre}
+
           hr
 
           //=========================
@@ -97,7 +106,6 @@ block content
                 type="submit"
                 title="Me gusta"
               )
-
                 | ❤️ #{img.valoraciones ? img.valoraciones.length : 0}
 
             .dropdown
@@ -107,17 +115,14 @@ block content
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               )
-
                 | ⋮
 
               ul.dropdown-menu.dropdown-menu-end.shadow
 
                 li
-
                   a.dropdown-item(
                     href=`/colecciones/agregar/${publicacion.id}`
                   )
-
                     | 📁 Guardar en colección
 
                 li
@@ -134,10 +139,7 @@ block content
                       value=img.id
                     )
 
-                    button.dropdown-item(
-                      type="submit"
-                    )
-
+                    button.dropdown-item(type="submit")
                       | ⭐ #{yaFavorito ? "Quitar de favoritos" : "Agregar a favoritos"}
 
                 li
@@ -145,13 +147,11 @@ block content
                   a.dropdown-item.text-danger(
                     href=`/denuncias/crear/${img.id}`
                   )
-
                     | 🚩 Denunciar
 
                 if session.user && session.user.id === publicacion.user_id
 
                   li
-
                     hr.dropdown-divider
 
                   li
@@ -159,7 +159,6 @@ block content
                     a.dropdown-item(
                       href=`/publicaciones/editar/${publicacion.id}`
                     )
-
                       | ✏️ Editar publicación
 
                   li
@@ -171,18 +170,10 @@ block content
                       onsubmit="return confirm('¿Eliminar esta publicación?')"
                     )
 
-                      button.dropdown-item.text-danger(
-                        type="submit"
-                      )
-
+                      button.dropdown-item.text-danger(type="submit")
                         | 🗑 Eliminar publicación
 
           hr
-
-          //===================================
-          // COMENTARIOS
-          //===================================
-
 
           .d-flex.justify-content-between.align-items-center.mb-3
 
@@ -199,23 +190,17 @@ block content
 
                 if publicacion.comentarios_habilitados
 
-                  button.btn.btn-warning.btn-sm(
-                    type="submit"
-                  )
+                  button.btn.btn-warning.btn-sm(type="submit")
                     | 🔒 Cerrar comentarios
 
                 else
 
-                  button.btn.btn-success.btn-sm(
-                    type="submit"
-                  )
+                  button.btn.btn-success.btn-sm(type="submit")
                     | 🔓 Abrir comentarios
 
           if publicacion.comentarios && publicacion.comentarios.length > 0
 
-            .overflow-auto(
-              style="max-height:320px;"
-            )
+            .overflow-auto(style="max-height:320px;")
 
               each comentario in publicacion.comentarios
 
@@ -299,15 +284,12 @@ block content
                   required
                 )
 
-                button.btn.btn-primary(
-                  type="submit"
-                )
+                button.btn.btn-primary(type="submit")
                   | Enviar
 
           else
 
             .alert.alert-warning.mt-3.mb-0
-
               | Los comentarios están deshabilitados para esta publicación.
 
         //===================================
@@ -323,9 +305,7 @@ block content
 
             if rel.imagenes && rel.imagenes.length > 0
 
-              a(
-                href=`/publicaciones/${rel.id}`
-              )
+              a(href=`/publicaciones/${rel.id}`)
 
                 img.rounded-3.mb-3.shadow-sm(
                   src=rel.imagenes[0].url
@@ -335,7 +315,6 @@ block content
     hr.my-5
 
     h2.mb-4
-
       | Más como esto
 
     .row.row-cols-2.row-cols-md-4.g-3
@@ -346,9 +325,7 @@ block content
 
           .col
 
-            a(
-              href=`/publicaciones/${rel.id}`
-            )
+            a(href=`/publicaciones/${rel.id}`)
 
               img.rounded-4.shadow-sm(
                 src=rel.imagenes[0].url

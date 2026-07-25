@@ -53,136 +53,363 @@ html
 
         .col-lg-7
 
-          .card.shadow.border-0
+          .card.shadow.border-0.mb-4
 
             if publicacion.imagenes.length
 
               img.card-img-top(
-                src="/uploads/" + publicacion.imagenes[0].ruta
+                src=publicacion.imagenes[0].url
                 style="max-height:550px;object-fit:cover;"
               )
 
             .card-body
 
-              h3.mb-1
-
+              h2.fw-bold.mb-1
                 = publicacion.titulo
 
               p.text-muted.mb-3
 
                 strong Caso #
 
-                | #{publicacion.id}
+                |  #{publicacion.id}
 
               hr
 
-              p
+              .row
 
-                strong
+                .col-md-6
 
-                  i.bi.bi-person-fill.me-2
+                  p.mb-2
 
-                  | Autor:
+                    i.bi.bi-person-fill.me-2
 
-                | #{publicacion.usuario.username}
+                    strong Autor:
 
-              if publicacion.createdAt
+                    |  #{usuarioInfo.username}
 
-                p
+                .col-md-6
 
-                  strong
+                  p.mb-2
 
-                    i.bi.bi-calendar-event.me-2
+                    i.bi.bi-shield-check.me-2
 
-                    | Fecha:
+                    strong Estado:
 
-                  | #{new Date(publicacion.createdAt).toLocaleDateString("es-AR")}
+                    if publicacion.bloqueada
+
+                      span.badge.bg-danger Bloqueada
+
+                    else
+
+                      span.badge.bg-success Activa
 
               if publicacion.descripcion
 
                 hr
 
-                h5
+                h5.mb-3
 
                   i.bi.bi-card-text.me-2
 
                   | Descripción
 
-                p.text-muted
+                p.text-muted.mb-4
 
                   = publicacion.descripcion
 
+              if publicacion.etiquetas.length
+
+                hr
+
+                h5.mb-3
+
+                  i.bi.bi-tags.me-2
+
+                  | Etiquetas
+
+                each etiqueta in publicacion.etiquetas
+
+                  span.badge.bg-primary.me-2.mb-2
+                    | ##{etiqueta.nombre}
+
+          //==================================================
+          // ESTADÍSTICAS
+          //==================================================
+
+          .card.shadow.border-0
+
+            .card-header.bg-primary.text-white
+
+              h5.mb-0
+
+                i.bi.bi-bar-chart-fill.me-2
+
+                | Estadísticas de la publicación
+
+            .card-body
+
+              .row.text-center.g-3
+
+                .col-6.col-md-3
+
+                  .border.rounded.p-3.h-100
+
+                    i.bi.bi-heart-fill.text-danger.fs-2
+
+                    h3.mt-2.mb-0
+                      = estadisticas.likes
+
+                    small.text-muted Likes
+
+                .col-6.col-md-3
+
+                  .border.rounded.p-3.h-100
+
+                    i.bi.bi-chat-dots-fill.text-primary.fs-2
+
+                    h3.mt-2.mb-0
+                      = estadisticas.comentarios
+
+                    small.text-muted Comentarios
+
+                .col-6.col-md-3
+
+                  .border.rounded.p-3.h-100
+
+                    i.bi.bi-star-fill.text-warning.fs-2
+
+                    h3.mt-2.mb-0
+                      = estadisticas.favoritos
+
+                    small.text-muted Favoritos
+
+                .col-6.col-md-3
+
+                  .border.rounded.p-3.h-100
+
+                    i.bi.bi-images.text-success.fs-2
+
+                    h3.mt-2.mb-0
+                      = estadisticas.imagenes
+
+                    small.text-muted Imágenes
+
         //==================================================
-        // PANEL ADMINISTRADOR
+        // PANEL DEL ADMINISTRADOR
         //==================================================
 
         .col-lg-5
 
-          .card.shadow.border-0
 
-            .card-header.bg-dark.text-white
+          .card.shadow.border-0.mb-4
 
-              h4.mb-0
+          .card-header.bg-dark.text-white
 
-                i.bi.bi-shield-lock-fill.me-2
+            h4.mb-0
 
-                | Panel del Administrador
+              i.bi.bi-shield-lock-fill.me-2
+
+              | Panel del Administrador
+
+          .card-body
+
+            h5.mb-3 Estado del caso
+
+            if publicacion.bloqueada
+
+              span.badge.bg-danger.fs-6 Publicación bloqueada
+
+            else
+
+              span.badge.bg-success.fs-6 Publicación activa
+
+            hr
+
+            h5.mb-3 Prioridad
+
+            span(class=`badge bg-${prioridad.color} fs-6`)
+              = prioridad.texto
+
+            hr
+
+            h5.mb-3 Denuncias recibidas
+
+            h2.text-danger.mb-0
+              = totalDenuncias
+
+            p.text-muted.mb-0 reportes registrados
+
+            .alert.alert-warning.mt-4
+
+              i.bi.bi-exclamation-triangle-fill.me-2
+
+              | Revise cuidadosamente la publicación antes de tomar una decisión.
+
+          //==================================================
+          // USUARIO
+          //==================================================
+
+          .card.shadow.border-0.mb-4
+
+            .card-header.bg-primary.text-white
+
+              h5.mb-0
+
+                i.bi.bi-person-circle.me-2
+
+                | Información del usuario
 
             .card-body
 
-              h5.mb-3
+              .text-center.mb-4
 
-                strong Estado del caso
+                if usuarioInfo.foto
 
-              span.badge.bg-warning.text-dark.fs-6 Pendiente de revisión
+                  img.rounded-circle.mb-3(
+                    src=src=usuarioInfo.foto
+                    width="120"
+                    height="120"
+                    style="object-fit:cover;"
+                  )
 
-                
+                else
+
+                  i.bi.bi-person-circle.display-1.text-secondary
+
+                h4.mb-1
+                  = publicacion.usuario.username
+
+                if usuarioInfo.activo
+
+                  span.badge.bg-success Usuario activo
+
+                else
+
+                  span.badge.bg-dark Usuario suspendido
 
               hr
 
-              p
+              .row.g-3.text-center
 
-                strong Denuncias recibidas
+                .col-6
 
-              h2.text-danger
+                  .border.rounded.p-2
 
-                = totalDenuncias
+                    h4.mb-0
+                      = usuarioInfo.publicaciones
+
+                    small.text-muted Publicaciones
+
+                .col-6
+
+                  .border.rounded.p-2
+
+                    h4.mb-0
+                      = usuarioInfo.comentarios
+
+                    small.text-muted Comentarios
+
+                .col-6
+
+                  .border.rounded.p-2
+
+                    h4.mb-0
+                      = usuarioInfo.favoritos
+
+                    small.text-muted Favoritos
+
+                .col-6
+
+                  .border.rounded.p-2
+
+                    h4.mb-0
+                      = usuarioInfo.publicacionesBajadas
+
+                    small.text-muted Eliminadas
+
+                .col-6
+
+                  .border.rounded.p-2
+
+                    h4.mb-0
+                      = usuarioInfo.seguidores
+
+                    small.text-muted Seguidores
+
+                .col-6
+
+                  .border.rounded.p-2
+
+                    h4.mb-0
+                      = usuarioInfo.siguiendo
+
+                    small.text-muted Siguiendo
 
               hr
 
-              p
+              h6 Estado disciplinario
 
-                strong Prioridad
+              span(class=`badge bg-${usuarioInfo.estadoModeracion.color}`)
+                = usuarioInfo.estadoModeracion.texto
 
-              if prioridad === "Alta"
+          //==================================================
+          // DENUNCIAS
+          //==================================================
 
-                span.badge.bg-danger.fs-6 Alta
+          .card.shadow.border-0.mb-4
 
-              else if prioridad === "Media"
+            .card-header.bg-danger.text-white
 
-                span.badge.bg-warning.text-dark.fs-6 Media
+              h5.mb-0
+
+                i.bi.bi-flag-fill.me-2
+
+                | Denuncias recibidas
+
+            .card-body
+
+              if denuncias.length
+
+                each denuncia in denuncias
+
+                  .border.rounded.p-3.mb-3
+
+                    .d-flex.justify-content-between
+
+                      strong
+                        = denuncia.motivo
+
+                      small.text-muted
+                        = denuncia.usuario.username
+
+                    if denuncia.descripcion
+
+                      p.mt-2.mb-0.text-muted
+                        = denuncia.descripcion
 
               else
 
-                span.badge.bg-secondary.fs-6 Normal
+                .alert.alert-success.mb-0
 
-              hr
+                  i.bi.bi-check-circle-fill.me-2
 
-              .alert.alert-warning
+                  | No existen denuncias registradas.
 
-                i.bi.bi-exclamation-triangle-fill.me-2
+          //==================================================
+          // ACCIONES
+          //==================================================
 
-                | Revise cuidadosamente la publicación antes de tomar una decisión. Las acciones realizadas afectarán la visibilidad del contenido y el historial del usuario.
+          .card.shadow.border-0
 
-              h5
+            .card-header.bg-secondary.text-white
 
-                strong Motivos de denuncia
+              h5.mb-0
 
-              .alert.alert-secondary
+                i.bi.bi-gear-fill.me-2
 
-                i.bi.bi-tools.me-2
+                | Acciones
 
-                | Esta información estará disponible en el Sprint 2.
+            .card-body
 
               form(
                 action="/administrador/publicaciones/" + publicacion.id + "/aprobar"
@@ -198,7 +425,7 @@ html
               form(
                 action="/administrador/publicaciones/" + publicacion.id + "/dar-de-baja"
                 method="POST"
-                onsubmit="return confirm('¿Está seguro de dar de baja esta publicación?')"
+                onsubmit="return confirm('¿Está seguro de dar de baja esta publicación?')" 
               )
 
                 button.btn.btn-danger.w-100
@@ -206,3 +433,5 @@ html
                   i.bi.bi-trash3-fill.me-2
 
                   | Dar de baja publicación
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")

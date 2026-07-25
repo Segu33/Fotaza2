@@ -17,9 +17,28 @@ block content
             style="text-decoration:none;"
           )
 
-            .card.border-0.rounded-4.overflow-hidden
+            .card.border-0.rounded-4.shadow-sm.overflow-hidden.h-100
 
               img.card-img-top(
                 src=img.url
                 style="width:100%; display:block;"
               )
+
+              .card-body
+
+                h6.card-title.text-dark.mb-2.text-truncate
+                  = pub.titulo
+
+                if pub.etiquetas && pub.etiquetas.length
+
+                  .d-flex.flex-wrap.gap-1.mb-2
+
+                    each etiqueta in pub.etiquetas
+
+                      span.badge.bg-secondary
+                        | ##{etiqueta.nombre}
+
+                if pub.usuario
+
+                  small.text-muted
+                    | por #{pub.usuario.username}

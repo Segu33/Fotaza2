@@ -1,5 +1,5 @@
 const db = require("../models");
-
+const bcrypt = require("bcrypt");
 // =======================
 // Ver perfil
 // =======================
@@ -146,9 +146,123 @@ const actualizarPerfil = async (req, res) => {
     }
 
 };
+// =======================================
+// MOSTRAR CAMBIO DE CONTRASEÑA
+// =======================================
+
+const mostrarCambiarPassword = (req, res) => {
+
+    res.render("perfil/cambiarPassword", {
+
+        session: req.session,
+        error: null,
+        success: null
+
+    });
+
+};
+
+// =======================================
+// CAMBIAR CONTRASEÑA
+// =======================================
+
+const cambiarPassword = async (req, res) => {
+
+    try {
+
+        const {
+
+            passwordActual,
+            passwordNueva,
+            confirmarPassword
+
+        } = req.body;
+
+        const usuario = await db.User.findByPk(req.session.user.id);
+
+        if (!usuario) {
+
+            return res.redirect("/login");
+
+        }
+
+        const coincide = await bcrypt.compare(
+            passwordActual,
+            usuario.password
+        );
+
+        if (!coincide) {
+
+            return res.render("perfil/cambiarPassword", {
+
+                session: req.session,
+                error: "La contraseña actual es incorrecta.",
+                success: null
+
+            });
+
+        }
+
+        if (passwordNueva !== confirmarPassword) {
+
+            return res.render("perfil/cambiarPassword", {
+
+                session: req.session,
+                error: "Las nuevas contraseñas no coinciden.",
+                success: null
+
+            });
+
+        }
+
+        if (passwordNueva.length < 6) {
+
+            return res.render("perfil/cambiarPassword", {
+
+                session: req.session,
+                error: "La contraseña debe tener al menos 6 caracteres.",
+                success: null
+
+            });
+
+        }
+
+        const passwordHash = await bcrypt.hash(passwordNueva, 10);
+
+        await usuario.update({
+
+            password: passwordHash
+
+        });
+
+        res.render("perfil/cambiarPassword", {
+
+            session: req.session,
+            error: null,
+            success: "La contraseña fue actualizada correctamente."
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.render("perfil/cambiarPassword", {
+
+            session: req.session,
+            error: "Ocurrió un error al cambiar la contraseña.",
+            success: null
+
+        });
+
+    }
+
+};
 
 module.exports = {
     verPerfil,
     editarPerfil,
-    actualizarPerfil
+    actualizarPerfil,
+    mostrarCambiarPassword,
+    cambiarPassword
 };
