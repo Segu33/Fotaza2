@@ -2,7 +2,9 @@ extends ../layouts/main
 
 block content
 
-  .row.g-3.justify-content-start
+  .row#galleria(
+    data-masonry='{"percentPosition": true }'
+  )
 
     each pub in publicaciones
 
@@ -10,7 +12,7 @@ block content
 
       if img
 
-        .col-12.col-sm-6.col-md-4.col-lg-3
+        .col-12.col-sm-6.col-md-4.col-lg-3.mb-4.grid-item
 
           a(
             href=`/publicaciones/${pub.id}`
@@ -43,3 +45,24 @@ block content
 
                   small.text-muted
                     | por #{pub.usuario.username}
+
+block scripts
+
+  script.
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const grid = document.querySelector("#galleria");
+
+      if (!grid) return;
+
+      imagesLoaded(grid, function () {
+
+        new Masonry(grid, {
+          itemSelector: ".grid-item",
+          percentPosition: true
+        });
+
+      });
+
+    });

@@ -235,25 +235,84 @@ const verPublicacion = async (req, res) => {
       return res.send("Publicación no encontrada");
     }
 
-    const relacionadas = await db.Publicacion.findAll({
-      where: {
-        id: {
-          [Op.ne]: publicacion.id,
-        },
-        bloqueada: false,
+    // ===============================
+// PUBLICACIONES RELACIONADAS
+// (MISMAS ETIQUETAS)
+// ===============================
+
+const idsEtiquetas = publicacion.etiquetas.map(e => e.id);
+
+let relacionadas = [];
+
+if (idsEtiquetas.length > 0) {
+
+  relacionadas = await db.Publicacion.findAll({
+
+    where: {
+      id: {
+        [Op.ne]: publicacion.id,
       },
+      bloqueada: false,
+    },
 
-      include: [
-        {
-          model: db.Imagen,
-          as: "imagenes",
+    include: [
+      {
+        model: db.Imagen,
+        as: "imagenes",
+      },
+      {
+        model: db.Etiqueta,
+        as: "etiquetas",
+        where: {
+          id: idsEtiquetas,
         },
-      ],
+        through: {
+          attributes: [],
+        },
+      },
+    ],
 
-      limit: 8,
+    distinct: true,
 
-      order: db.sequelize.random(),
-    });
+    limit: 8,
+
+  });
+
+}
+
+// Si no encontró publicaciones con las mismas etiquetas,
+// completa con publicaciones aleatorias.
+
+if (relacionadas.length < 8) {
+
+  const restantes = await db.Publicacion.findAll({
+
+    where: {
+      id: {
+        [Op.notIn]: [
+          publicacion.id,
+          ...relacionadas.map(p => p.id),
+        ],
+      },
+      bloqueada: false,
+    },
+
+    include: [
+      {
+        model: db.Imagen,
+        as: "imagenes",
+      },
+    ],
+
+    order: db.sequelize.random(),
+
+    limit: 8 - relacionadas.length,
+
+  });
+
+  relacionadas = [...relacionadas, ...restantes];
+
+}
 
     res.render("publicaciones/detalle", {
       publicacion,
@@ -288,10 +347,173 @@ const toggleComentarios = async (req, res) => {
     res.send("Error al actualizar comentarios");
   }
 };
+// =========================
+// MOSTRAR EDITAR PUBLICACIÓN
+// =========================
+
+const mostrarEditarPublicacion = async (req, res) => {
+
+  try {
+
+    const publicacion = await db.Publicacion.findByPk(req.params.id, {
+
+      include: [
+        {
+          model: db.Imagen,
+          as: "imagenes"
+        },
+        {
+          model: db.Etiqueta,
+          as: "etiquetas"
+        }
+      ]
+
+    });
+
+    if (!publicacion) {
+      return res.redirect("/publicaciones");
+    }
+
+    if (publicacion.user_id !== req.session.user.id) {
+      return res.redirect(`/publicaciones/${publicacion.id}`);
+    }
+
+    res.render("publicaciones/editar", {
+
+      publicacion,
+      session: req.session
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+    res.send("Error cargando la publicación");
+
+  }
+
+};
+// =========================
+// EDITAR PUBLICACIÓN
+// =========================
+
+const editarPublicacion = async (req, res) => {
+
+  try {
+
+    const { titulo, descripcion, etiquetas } = req.body;
+
+    const publicacion = await db.Publicacion.findByPk(req.params.id, {
+
+      include: [
+        {
+          model: db.Imagen,
+          as: "imagenes"
+        }
+      ]
+
+    });
+
+    if (!publicacion) {
+      return res.redirect("/publicaciones");
+    }
+
+    if (publicacion.user_id !== req.session.user.id) {
+      return res.redirect(`/publicaciones/${publicacion.id}`);
+    }
+
+    await publicacion.update({
+
+      titulo,
+      descripcion
+
+    });
+
+    // =========================
+    // REEMPLAZAR IMAGEN (OPCIONAL)
+    // =========================
+
+    if (req.file) {
+
+      if (publicacion.imagenes.length > 0) {
+
+        await publicacion.imagenes[0].update({
+
+          url: "/uploads/" + req.file.filename
+
+        });
+
+      } else {
+
+        await db.Imagen.create({
+
+          url: "/uploads/" + req.file.filename,
+          licencia: "libre",
+          publicacion_id: publicacion.id
+
+        });
+
+      }
+
+    }
+
+    // =========================
+    // ACTUALIZAR ETIQUETAS
+    // =========================
+
+    await publicacion.setEtiquetas([]);
+
+    if (etiquetas && etiquetas.trim() !== "") {
+
+      const listaEtiquetas = [
+        ...new Set(
+          etiquetas
+            .split(",")
+            .map(e => e.trim().toLowerCase())
+            .filter(e => e.length > 0)
+        )
+      ];
+
+      for (const nombre of listaEtiquetas) {
+
+        let etiqueta = await db.Etiqueta.findOne({
+
+          where: { nombre }
+
+        });
+
+        if (!etiqueta) {
+
+          etiqueta = await db.Etiqueta.create({
+
+            nombre
+
+          });
+
+        }
+
+        await publicacion.addEtiqueta(etiqueta);
+
+      }
+
+    }
+
+    return res.redirect(`/publicaciones/${publicacion.id}`);
+
+  } catch (error) {
+
+    console.error(error);
+    res.send("Error al editar la publicación");
+
+  }
+
+};
 
 module.exports = {
   crearPublicacion,
   listarPublicaciones,
   verPublicacion,
   toggleComentarios,
+  mostrarEditarPublicacion,
+  editarPublicacion
 };

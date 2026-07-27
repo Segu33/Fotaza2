@@ -4,9 +4,53 @@ const db = require("../models");
 // DASHBOARD
 // ========================================
 
-const dashboard = (req, res) => {
+const dashboard = async (req, res) => {
 
-    res.render("administrador/index");
+    try {
+
+        const totalUsuarios = await db.User.count({
+            where: {
+                rol: "usuario"
+            }
+        });
+
+        const totalPublicaciones = await db.Publicacion.count({
+            where: {
+                bloqueada: false
+            }
+        });
+
+        const publicacionesPendientes = await db.Publicacion.count({
+            where: {
+                bloqueada: true,
+                estado_moderacion: "pendiente"
+            }
+        });
+
+        const usuariosSuspendidos = await db.User.count({
+            where: {
+                activo: false,
+                rol: "usuario"
+            }
+        });
+
+        res.render("administrador/index", {
+
+            totalUsuarios,
+            totalPublicaciones,
+            publicacionesPendientes,
+            usuariosSuspendidos,
+            session: req.session
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.redirect("/");
+
+    }
 
 };
 

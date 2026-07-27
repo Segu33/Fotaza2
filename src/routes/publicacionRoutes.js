@@ -28,7 +28,20 @@ router.post(
   authMiddleware,
   publicacionController.toggleComentarios
 );
+// 👉 MOSTRAR EDITAR PUBLICACIÓN
+router.get(
+  "/editar/:id",
+  authMiddleware,
+  publicacionController.mostrarEditarPublicacion
+);
 
+// 👉 GUARDAR CAMBIOS
+router.post(
+  "/editar/:id",
+  authMiddleware,
+  upload.single("imagen"),
+  publicacionController.editarPublicacion
+);
 // 👉 VER PUBLICACIÓN
 router.get("/:id", publicacionController.verPublicacion);
 

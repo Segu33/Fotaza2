@@ -1,0 +1,113 @@
+extends ../layouts/main
+
+block content
+
+  .row.justify-content-center.mt-5
+
+    .col-md-8.col-lg-6
+
+      .card.shadow-lg.border-0.rounded-4
+
+        .card-body.p-5
+
+          h2.text-center.mb-4
+            | ✏️ Editar publicación
+
+          p.text-center.text-muted.mb-4
+            | Modificá la información de tu publicación
+
+          form(
+            action=`/publicaciones/editar/${publicacion.id}`
+            method="POST"
+            enctype="multipart/form-data"
+          )
+
+            //=========================
+            // TÍTULO
+            //=========================
+
+            .mb-3
+
+              label.form-label
+                | Título
+
+              input.form-control(
+                type="text"
+                name="titulo"
+                value=publicacion.titulo
+                required
+              )
+
+            //=========================
+            // DESCRIPCIÓN
+            //=========================
+
+            .mb-3
+
+              label.form-label
+                | Descripción
+
+              textarea.form-control(
+                name="descripcion"
+                rows="4"
+              )= publicacion.descripcion
+
+            //=========================
+            // ETIQUETAS
+            //=========================
+
+            .mb-3
+
+              label.form-label
+                | Etiquetas
+
+              input.form-control(
+                type="text"
+                name="etiquetas"
+                value=publicacion.etiquetas.map(e => e.nombre).join(", ")
+              )
+
+              .form-text
+                | Separá las etiquetas con comas.
+
+            //=========================
+            // IMAGEN ACTUAL
+            //=========================
+
+            if publicacion.imagenes && publicacion.imagenes.length
+
+              .mb-3.text-center
+
+                img.img-fluid.rounded.shadow(
+                  src=publicacion.imagenes[0].url
+                  style="max-height:300px;"
+                )
+
+            //=========================
+            // NUEVA IMAGEN
+            //=========================
+
+            .mb-4
+
+              label.form-label
+                | Reemplazar imagen (opcional)
+
+              input.form-control(
+                type="file"
+                name="imagen"
+                accept="image/*"
+              )
+
+            .d-grid.gap-2
+
+              button.btn.btn-primary(
+                type="submit"
+              )
+                i.bi.bi-check-circle.me-2
+                | Guardar cambios
+
+              a.btn.btn-outline-secondary(
+                href=`/publicaciones/${publicacion.id}`
+              )
+                i.bi.bi-x-circle.me-2
+                | Cancelar
