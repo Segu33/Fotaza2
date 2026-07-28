@@ -140,7 +140,51 @@ block content
                 i.bi.bi-folder-fill.me-2
 
                 | Mis Colecciones
-        hr.my-4
+
+        //=========================
+        // ACCIONES
+        //=========================
+
+        .col-lg-3.col-md-3.mt-4.mt-md-0
+
+          if session && session.user && session.user.id !== usuario.id
+
+            .d-grid.gap-2.mb-4
+
+              if siguiendo
+
+                form(
+                  action=`/follow/dejar-seguir/${usuario.id}`
+                  method="POST"
+                )
+
+                  button.btn.btn-danger.w-100.rounded-pill(type="submit")
+
+                    i.bi.bi-check-circle.me-2
+
+                    | Siguiendo
+
+              else
+
+                form(
+                  action=`/follow/seguir/${usuario.id}`
+                  method="POST"
+                )
+
+                  button.btn.btn-primary.w-100.rounded-pill(type="submit")
+
+                    i.bi.bi-person-plus.me-2
+
+                    | Seguir
+
+              a.btn.btn-outline-dark.w-100.rounded-pill(
+                href=`/mensajes/nuevo/${usuario.id}`
+              )
+
+                i.bi.bi-chat-dots-fill.me-2
+
+                | Mensaje
+    
 
     .row
 
@@ -148,7 +192,7 @@ block content
       // PUBLICACIONES
       //=========================
 
-      .col-lg-9
+      .col(class=(session && session.user && session.user.id === usuario.id ? "col-lg-9" : "col-lg-12"))
 
         h2.mb-4
 
@@ -224,47 +268,49 @@ block content
                         = pub.descripcion
 
       //=========================
-      // PUBLICACIONES QUE SIGO
+      // ÚLTIMAS PUBLICACIONES DE PERSONAS QUE SIGO
       //=========================
 
-      .col-lg-3
+      if session && session.user && session.user.id === usuario.id
 
-        if publicacionesSeguidos && publicacionesSeguidos.length
+        .col-lg-3
 
-          .card.shadow-sm.border-0.rounded-4.sticky-top(style="top:90px;")
+          if publicacionesSeguidos && publicacionesSeguidos.length
 
-            .card-header.bg-white
+            .card.shadow-sm.border-0.rounded-4.sticky-top(style="top:90px;")
 
-              h6.fw-bold.mb-0
+              .card-header.bg-white
 
-                i.bi.bi-images.me-2
+                h6.fw-bold.mb-0
 
-                | 👥 Últimas publicaciones de personas que sigo
+                  i.bi.bi-images.me-2
 
-            .card-body
+                  | 👥 Últimas publicaciones de personas que sigo
 
-              each pub in publicacionesSeguidos
+              .card-body
 
-                if pub.imagenes && pub.imagenes.length
+                each pub in publicacionesSeguidos
 
-                  a(
-                    href=`/publicaciones/${pub.id}`
-                    style="text-decoration:none;"
-                  )
+                  if pub.imagenes && pub.imagenes.length
 
-                    .d-flex.align-items-center.mb-4
+                    a(
+                      href=`/publicaciones/${pub.id}`
+                      style="text-decoration:none;"
+                    )
 
-                      img.rounded-3.shadow-sm(
-                        src=pub.imagenes[0].url
-                        style="width:100px;height:100px;object-fit:cover;"
-                      )
+                      .d-flex.align-items-center.mb-4
 
-                      .ms-3
+                        img.rounded-3.shadow-sm(
+                          src=pub.imagenes[0].url
+                          style="width:100px;height:100px;object-fit:cover;"
+                        )
 
-                        h6.text-dark.mb-1.small
+                        .ms-3
 
-                          = pub.titulo
+                          h6.text-dark.mb-1.small
 
-                        small.text-muted.d-block
+                            = pub.titulo
 
-                          = pub.usuario.username                
+                          small.text-muted.d-block
+
+                            = pub.usuario.username
